@@ -13,8 +13,8 @@ leafs are reached. Then they locally aggregate the shares they have and send the
 The root collects all the data and publishes the final aggregation
 */
 
-//AggregationProtocolName is the name of Prio's aggregation protocol.
-const AggregationProtocolName = "PrioAggregation"
+//AggregationProtocolName is the name of aggregation protocol.
+const AggregationProtocolName = "Aggregation"
 
 /*_________________________________________________________________________________________________________________
  */

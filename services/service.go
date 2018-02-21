@@ -1,13 +1,14 @@
 package serviceUnLynxSMC
 
 /**
-This service instantiate a Prio Protocol, where DP answer server query. The part where a querier
-ask server for data is not depicted. For each client submission, data are split, encoded
-verified and aggregated. We use the AFE of a sum directly implemented in prio_aggregation_protocol but any other can be used.
+This service instantiates a SMC-Protocol, where DP answer a server query. The part where a querier
+asks the server for data is not depicted. For each client submission, data are split, encoded
+verified and aggregated. We use the AFE of a sum directly implemented in aggregation_protocol but any other AFE can be used.
 */
 
 import (
 	"github.com/fanliao/go-concurrentMap"
+	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/triple"
 	"github.com/henrycg/prio/utils"
@@ -16,13 +17,12 @@ import (
 	"gopkg.in/dedis/onet.v1/network"
 	"math/big"
 
-	"github.com/henrycg/prio/config"
 	"github.com/lca1/unlynx-smc/lib"
 	"github.com/lca1/unlynx-smc/protocols"
 )
 
-//ServiceName is the name for Prio Service
-const ServiceName = "Prio"
+//ServiceName is the name for UnLynxSMC Service
+const ServiceName = "UnLynxSMC"
 
 // ServiceResult will contain final results aggregation.
 type ServiceResult struct {
@@ -92,26 +92,26 @@ type Service struct {
 	Count   int64
 }
 
-//NewService creates a new Prio Service.
+//NewService creates a new UnLynxSMC Service.
 func NewService(c *onet.Context) onet.Service {
-	newPrioInstance := &Service{
+	newUnLynxSMCInstance := &Service{
 		ServiceProcessor: onet.NewServiceProcessor(c),
 		Request:          concurrent.NewConcurrentMap(),
 	}
 
-	if cerr := newPrioInstance.RegisterHandler(newPrioInstance.HandleRequest); cerr != nil {
+	if cerr := newUnLynxSMCInstance.RegisterHandler(newUnLynxSMCInstance.HandleRequest); cerr != nil {
 		log.Fatal("Wrong Handler.", cerr)
 	}
 
-	if cerr := newPrioInstance.RegisterHandler(newPrioInstance.ExecuteRequest); cerr != nil {
+	if cerr := newUnLynxSMCInstance.RegisterHandler(newUnLynxSMCInstance.ExecuteRequest); cerr != nil {
 		log.Fatal("Wrong Handler.", cerr)
 	}
 
-	if cerr := newPrioInstance.RegisterHandler(newPrioInstance.ExecuteAggregation); cerr != nil {
+	if cerr := newUnLynxSMCInstance.RegisterHandler(newUnLynxSMCInstance.ExecuteAggregation); cerr != nil {
 		log.Fatal("Wrong Handler.", cerr)
 	}
 
-	return newPrioInstance
+	return newUnLynxSMCInstance
 }
 
 //HandleRequest handles a request from a client by registering it
@@ -129,9 +129,6 @@ func (s *Service) HandleRequest(requestFromClient *DataSentClient) (network.Mess
 
 //ExecuteRequest executes the verification of a request
 func (s *Service) ExecuteRequest(exe *ExecRequest) (network.Message, onet.ClientError) {
-
-	//log.Lvl1(s.ServerIdentity(), " starts a Prio Verification Protocol")
-
 	acc, err := s.VerifyPhase(exe.ID)
 	if err != nil {
 		log.Fatal("Error in the Verify Phase")
@@ -139,7 +136,6 @@ func (s *Service) ExecuteRequest(exe *ExecRequest) (network.Message, onet.Client
 	if !acc {
 		log.LLvl2("Data have not been accepted for request ID", exe.ID)
 	}
-	//log.Lvl1("Finish verification")
 	return nil, nil
 }
 

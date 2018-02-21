@@ -25,16 +25,16 @@ var secret2 = big.NewInt(int64(5518495792165))
 var secret1Share = share.Share(share.IntModulus, nbS, secret1)
 var secret2Share = share.Share(share.IntModulus, nbS, secret2)
 
-func TestPrioAggregationProtocol(t *testing.T) {
+func TestAggregationProtocol(t *testing.T) {
 
 	local := onet.NewLocalTest()
 
 	// You must register this protocol before creating the servers
-	onet.GlobalProtocolRegister("PrioAggregationTest", NewPrioAggregationTest)
+	onet.GlobalProtocolRegister("AggregationTest", NewAggregationTest)
 	_, _, tree := local.GenTree(nbS, true)
 	defer local.CloseAll()
 
-	p, err := local.CreateProtocol("PrioAggregationTest", tree)
+	p, err := local.CreateProtocol("AggregationTest", tree)
 	if err != nil {
 		t.Fatal("Couldn't start protocol:", err)
 	}
@@ -63,7 +63,7 @@ func TestPrioAggregationProtocol(t *testing.T) {
 }
 
 //inject Test data
-func NewPrioAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
+func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
 
 	pi, err := NewAggregationProtocol(tni)
 	protocol := pi.(*AggregationProtocol)

@@ -8,15 +8,15 @@ import (
 )
 
 var nbHost = 5
-var nbServ = 5
+var nbServers = 5
 
-func TestServicePrio(t *testing.T) {
+func TestServiceUnLynxSMC(t *testing.T) {
 	//log.SetDebugVisible(3)
 	local := onet.NewLocalTest()
 
 	// generate 5 hosts, they don't connect, they process messages, and they
 	// don't register the tree or entity list
-	_, el, _ := local.GenTree(nbServ, false)
+	_, el, _ := local.GenTree(nbServers, false)
 	defer local.CloseAll()
 
 	dataPro := make([]*serviceUnLynxSMC.API, nbHost)

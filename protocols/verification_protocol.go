@@ -12,20 +12,20 @@ import (
 )
 
 /**
-This protocol is used to verify that a Prio request from a Client is Valid.
+This protocol is used to verify that a request from a Client is Valid.
 At the end it outputs an array of integers for each protocol (it is not shared) that represents the share
 that can be used to calculate the final aggregation.
 At the beginning we had a request represented by PRG hints and shares of the MPC triple. This is an optimization
-done by the Prio creator to send PRG key linked to hash instead of big int directly.
+done by the creator to send PRG key linked to hash instead of big int directly.
 The protocol collectively verifies if the circuit is Valid (which is available to anyone), on the share inputs.
 
 Note: You cannot check that the output aggregates back to the result needed as you need the data from all nodes
-(not only root), but this can be done in the Services/prio. If the protocol
+(not only root), but this can be done in the services/. If the protocol
 returns True, the protocol has verified correctly and the data are correct.
 */
 
-//VerificationProtocolName is the name for Prio's Verification
-const VerificationProtocolName = "PrioVerification"
+//VerificationProtocolName is the name for Verification protocol
+const VerificationProtocolName = "Verification"
 
 /*Messages
 ____________________________________________________________________________________________________________________
@@ -37,7 +37,7 @@ type AnnounceVerification struct{}
 //ResponseVerification is the structure to notify that server is awake.
 type ResponseVerification struct{}
 
-//CorShare is the share broadcasted by each client to reconstrut d & e for Beaver MPC
+//CorShare is the share broadcasted by each client to reconstruct d & e for Beaver MPC
 type CorShare struct {
 	CorShareD []byte
 	CorShareE []byte

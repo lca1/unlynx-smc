@@ -1,20 +1,19 @@
 package serviceUnLynxSMC
 
 /**
-Implementation of a data provider in Prio, to simplify all function are used with the client name
-to signify the communication way but it's data provider !
+Implementation of a data provider. All functions are used with the client name to specify the communication way but this client is in fact a data provider !
 */
 import (
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
-	"github.com/lca1/unlynx/lib/prioUtils"
+	"github.com/lca1/unlynx-smc/lib"
 	"gopkg.in/dedis/onet.v1"
 	"gopkg.in/dedis/onet.v1/log"
 	"math/big"
 )
 
-//API is the data provider in prio represented as its secret value ID and modulus
+//API is the data provider represented as its secret value ID and modulus
 type API struct {
 	*onet.Client
 	ClientID    string
@@ -22,7 +21,7 @@ type API struct {
 	modulus     *big.Int
 }
 
-//ConfigByte is just used because Protobuff cannot handle int...
+//ConfigByte is just used because protobuff cannot handle int...
 type ConfigByte struct {
 	Name            string
 	Type            int64
@@ -53,7 +52,7 @@ func (c *API) SendRequest(entities *onet.Roster) (string, error) {
 	//dataSplited := prio_utils.Share(c.modulus,numServer,c.secretValue)
 
 	//For the moment for almost all type, they are chosen randomly in function of the number of bits passed
-	requests := prioUtils.ClientRequest(c.secretValue, numServer, 0)
+	requests := libUnLynxSMC.ClientRequest(c.secretValue, numServer, 0)
 
 	//Conversion of field as protoBuf do not take int only int64
 	circuitConfig := make([]ConfigByte, len(c.secretValue))

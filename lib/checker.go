@@ -10,8 +10,7 @@ import (
 
 //File originally in Prio repository.
 
-// Checker holds all of the state needed to check the validity
-// of a single client submission.
+//Checker holds all of the state needed to check the validity of a single client submission.
 type Checker struct {
 	req *Request
 	Prg *share.ReplayPRG

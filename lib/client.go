@@ -13,8 +13,7 @@ import (
 	"math/rand"
 )
 
-//this should be run at client for proof start
-//a ClientRequest is sent to each server from one client, for all clients
+//This should be run at client for proof start ClientRequest is sent to each server from one client, for all clients
 
 //Request represent the Shares of the circuit and of the Beaver MPC triples
 type Request struct {

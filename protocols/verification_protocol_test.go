@@ -31,16 +31,16 @@ var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(b
 var req = libUnLynxSMC.ClientRequest(datas, nbServ, 0)
 var randomPoint = utils.RandInt(share.IntModulus)
 
-func TestPrioVerificationProtocol(t *testing.T) {
+func TestVerificationProtocol(t *testing.T) {
 
 	local := onet.NewLocalTest()
 
 	// You must register this protocol before creating the servers
-	onet.GlobalProtocolRegister("PrioVerificationTest", NewPrioVerificationTest)
+	onet.GlobalProtocolRegister("VerificationTest", NewVerificationTest)
 	_, _, tree := local.GenTree(nbServ, true)
 	defer local.CloseAll()
 
-	p, err := local.CreateProtocol("PrioVerificationTest", tree)
+	p, err := local.CreateProtocol("VerificationTest", tree)
 	if err != nil {
 		t.Fatal("Couldn't start protocol:", err)
 	}
@@ -60,7 +60,7 @@ func TestPrioVerificationProtocol(t *testing.T) {
 }
 
 //inject Test data
-func NewPrioVerificationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
+func NewVerificationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
 	pi, err := NewVerificationProtocol(tni)
 	protocol := pi.(*VerificationProtocol)
 
