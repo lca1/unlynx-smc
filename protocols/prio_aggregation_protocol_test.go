@@ -6,10 +6,10 @@ import (
 	"time"
 
 	"gopkg.in/dedis/onet.v1/log"
+	"gopkg.in/dedis/onet.v1/network"
 
 	"github.com/henrycg/prio/share"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/dedis/onet.v1/network"
 	"math/big"
 )
 

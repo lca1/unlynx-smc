@@ -2,16 +2,15 @@ package protocolsUnLynxSMC
 
 import (
 	"gopkg.in/dedis/onet.v1"
+	"gopkg.in/dedis/onet.v1/log"
 	"testing"
 	"time"
-	//	"math/big"
 
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
-	"github.com/lca1/unlynx/lib/prioUtils"
+	"github.com/lca1/unlynx-smc/lib"
 	"github.com/stretchr/testify/assert"
-	"gopkg.in/dedis/onet.v1/log"
 )
 
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its value
@@ -29,7 +28,7 @@ var nbServ = 2
 //var req = prio_utils.ClientRequest(serv1Share, 0)
 //var datas = []*config.Field{&config.Field{Name:"test",Type:config.FieldType(byte(5)),LinRegBits:[]int{14,7,1,2,7,8,1,3,8,1,8,4,4,1}},&config.Field{Name:"Test2",Type:config.FieldType(byte(5)),LinRegBits:[]int{1,2,5,2,7,3,8,1,8,1,8,3,6,12}}}
 var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: 2}}
-var req = prioUtils.ClientRequest(datas, nbServ, 0)
+var req = libUnLynxSMC.ClientRequest(datas, nbServ, 0)
 var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestPrioVerificationProtocol(t *testing.T) {
@@ -62,22 +61,22 @@ func TestPrioVerificationProtocol(t *testing.T) {
 
 //inject Test data
 func NewPrioVerificationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
-	pi, err := NewVerifcationProtocol(tni)
+	pi, err := NewVerificationProtocol(tni)
 	protocol := pi.(*VerificationProtocol)
 
 	//set circuit
-	ckt := prioUtils.ConfigToCircuit(datas)
+	ckt := libUnLynxSMC.ConfigToCircuit(datas)
 
 	//set request, checker and preChecker
-	protocol.Request = new(prioUtils.Request)
+	protocol.Request = new(libUnLynxSMC.Request)
 	protocol.Request = req[tni.Index()]
 
-	protocol.Checker = new(prioUtils.Checker)
-	protocol.Checker = prioUtils.NewChecker(ckt, protocol.Index(), 0)
+	protocol.Checker = new(libUnLynxSMC.Checker)
+	protocol.Checker = libUnLynxSMC.NewChecker(ckt, protocol.Index(), 0)
 
-	protocol.Pre = new(prioUtils.CheckerPrecomp)
+	protocol.Pre = new(libUnLynxSMC.CheckerPrecomp)
 
-	protocol.Pre = prioUtils.NewCheckerPrecomp(ckt)
+	protocol.Pre = libUnLynxSMC.NewCheckerPrecomp(ckt)
 	protocol.Pre.SetCheckerPrecomp(randomPoint)
 
 	return protocol, err

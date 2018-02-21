@@ -2,13 +2,13 @@ package protocolsUnLynxSMC
 
 import (
 	"errors"
-	"github.com/lca1/unlynx/lib/prioUtils"
 	"gopkg.in/dedis/onet.v1"
 	"gopkg.in/dedis/onet.v1/log"
 	"gopkg.in/dedis/onet.v1/network"
 	"math/big"
 
 	"github.com/henrycg/prio/utils"
+	"github.com/lca1/unlynx-smc/lib"
 )
 
 /**
@@ -88,9 +88,9 @@ type VerificationProtocol struct {
 	ResponsceChannel chan StructResponse
 
 	//Data structure to perform range proofs
-	Request *prioUtils.Request
-	Pre     *prioUtils.CheckerPrecomp
-	Checker *prioUtils.Checker
+	Request *libUnLynxSMC.Request
+	Pre     *libUnLynxSMC.CheckerPrecomp
+	Checker *libUnLynxSMC.Checker
 
 	//channel for proof
 	CorShareChannel chan StructCorShare
@@ -107,11 +107,11 @@ func init() {
 	network.RegisterMessage(AnnounceVerification{})
 	network.RegisterMessage(ResponseVerification{})
 	network.RegisterMessage(CorShare{})
-	onet.GlobalProtocolRegister(VerificationProtocolName, NewVerifcationProtocol)
+	onet.GlobalProtocolRegister(VerificationProtocolName, NewVerificationProtocol)
 }
 
-//NewVerifcationProtocol creates a new Protocol to verify
-func NewVerifcationProtocol(n *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
+//NewVerificationProtocol creates a new Protocol to verify
+func NewVerificationProtocol(n *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
 
 	st := &VerificationProtocol{
 		TreeNodeInstance: n,
@@ -202,7 +202,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	check := p.Checker
 	check.SetReq(p.Request)
 
-	evalReplies := new(prioUtils.CorShare)
+	evalReplies := new(libUnLynxSMC.CorShare)
 	//here evalReplies filled by evaluating on a point ( same for all protocols for a single client )
 	evalReplies = check.CorShare(p.Pre)
 
@@ -212,13 +212,13 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	p.Broadcast(&CorShare{evalReplies.ShareD.Bytes(), evalReplies.ShareE.Bytes()})
 
 	//Now they need to reconstruct it
-	evalRepliesFromAll := make([]*prioUtils.CorShare, 1)
+	evalRepliesFromAll := make([]*libUnLynxSMC.CorShare, 1)
 	evalRepliesFromAll[0] = evalReplies
 
 	//for each server get the value broadcasted
 	for i := 0; i < p.Tree().Size()-1; i++ {
 		v := <-p.CorShareChannel
-		corshare := new(prioUtils.CorShare)
+		corshare := new(libUnLynxSMC.CorShare)
 		corshare.ShareD = big.NewInt(0).SetBytes(v.CorShareD)
 		corshare.ShareE = big.NewInt(0).SetBytes(v.CorShareE)
 		evalRepliesFromAll = append(evalRepliesFromAll, corshare)
@@ -231,7 +231,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	//
 	// log.Lvl1(p.IsRoot())
 	//we need to do this on all servers as they all have a part of the beaver triple
-	finalReplies := make([]*prioUtils.OutShare, 1)
+	finalReplies := make([]*libUnLynxSMC.OutShare, 1)
 
 	//random key is same for all, evaluate cor on a randomKey
 	finalReplies[0] = check.OutShare(cor, randomKey)
@@ -243,11 +243,11 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 
 	//then the leader  do all the rest, check if its valid
 	if p.IsRoot() {
-		finalRepliesAll := make([]*prioUtils.OutShare, 1)
+		finalRepliesAll := make([]*libUnLynxSMC.OutShare, 1)
 		finalRepliesAll[0] = finalReplies[0]
 		for i := 0; i < p.Tree().Size()-1; i++ {
 			v := <-p.OutShareChannel
-			outShare := new(prioUtils.OutShare)
+			outShare := new(libUnLynxSMC.OutShare)
 			outShare.Check = big.NewInt(0).SetBytes(v.OutShare.Out)
 			finalRepliesAll = append(finalRepliesAll, outShare)
 		}

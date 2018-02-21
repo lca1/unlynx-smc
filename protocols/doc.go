@@ -34,7 +34,7 @@ Things to be changed in github dedis/onet.v1/network/encoding.go
 
 var Suite = ed25519.NewAES128SHA256Ed25519(false)
 -----------------------------------------------------------------------------------------------------------
-Things to be changed in githubd dedis/crypto.v0/ed25519/suite.go
+Things to be changed in github dedis/crypto.v0/ed25519/suite.go
 
 COMMENT ALL AND ADD
 

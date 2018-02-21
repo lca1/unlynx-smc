@@ -4,7 +4,6 @@ import (
 	"errors"
 	"gopkg.in/dedis/onet.v1"
 	"gopkg.in/dedis/onet.v1/network"
-
 	"math/big"
 )
 
@@ -161,7 +160,6 @@ func (p *AggregationProtocol) ascendingAggregationPhase() []*big.Int {
 	//do the sum of ciphers
 	for i := 0; i < len(p.Shares); i++ {
 		for j := 0; j < len(p.Sum); j++ {
-
 			p.Sum[j].Add(p.Sum[j], p.Shares[i][j])
 			p.Sum[j].Mod(p.Sum[j], p.Modulus)
 		}
