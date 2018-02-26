@@ -20,7 +20,7 @@ before_install:
 - sudo make && sudo make check && sudo make install
 # install FLINT
 - sudo wget http://www.flintlib.org/flint-2.5.2.tar.gz
-- sudo tar -xzf lint-2.5.2.tar.gz
+- sudo tar xzf lint-2.5.2.tar.gz
 - cd lint-2.5.2
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
