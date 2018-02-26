@@ -5,23 +5,23 @@ before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -y wget bzip2
 # install GMP 6.1.0
-- sudo wget https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2
-- sudo bunzip2 gmp-6.1.2.tar.bz2
-- sudo tar xvf gmp-6.1.2.tar
-- cd gmp-6.1.2
-- sudo ./configure
-- sudo make && sudo make check && sudo make install
+#- sudo wget https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2
+#- sudo bunzip2 gmp-6.1.2.tar.bz2
+#- sudo tar xvf gmp-6.1.2.tar
+#- cd gmp-6.1.2
+#- sudo ./configure
+#- sudo make && sudo make check && sudo make install
 # install MPFR
-- sudo wget http://www.mpfr.org/mpfr-current/mpfr-4.0.1.tar.bz2
-- sudo bunzip2 mpfr-4.0.1.tar.bz2
-- sudo tar xvf mpfr-4.0.1.tar
-- cd mpfr-4.0.1
-- sudo ./configure
-- sudo make && sudo make check && sudo make install
+#- sudo wget http://www.mpfr.org/mpfr-current/mpfr-4.0.1.tar.bz2
+#- sudo bunzip2 mpfr-4.0.1.tar.bz2
+#- sudo tar xvf mpfr-4.0.1.tar
+#- cd mpfr-4.0.1
+#- sudo ./configure
+#- sudo make && sudo make check && sudo make install
 # install FLINT
 - sudo wget http://www.flintlib.org/flint-2.5.2.tar.gz
-- sudo tar xzf lint-2.5.2.tar.gz
-- cd lint-2.5.2
+- sudo tar xzf flint-2.5.2.tar.gz
+- cd flint-2.5.2
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
 install:
