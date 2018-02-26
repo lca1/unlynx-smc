@@ -8,14 +8,14 @@ before_install:
 - sudo wget https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2
 - sudo bunzip2 gmp-6.1.2.tar.bz2
 - sudo tar xvf gmp-6.1.2.tar
-- sudo cd gmp-6.1.2
+- cd gmp-6.1.2
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
 # install MPIR
 - sudo wget http://www.mpir.org/mpir-3.0.0.tar.bz2
 - sudo bunzip2 mpir-3.0.0.tar.bz2
 - sudo tar xvf mpir-3.0.0.tar
-- sudo cd mpir-3.0.0
+- cd mpir-3.0.0
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
 # install MPFR
@@ -28,7 +28,7 @@ before_install:
 # install FLINT
 - sudo wget http://www.flintlib.org/flint-2.5.2.tar.gz
 - sudo tar -xzf lint-2.5.2.tar.gz
-- sudo cd lint-2.5.2
+- cd lint-2.5.2
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
 install:
