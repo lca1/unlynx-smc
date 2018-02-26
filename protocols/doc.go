@@ -1,4 +1,4 @@
-package protocolsUnLynxSMC
+package protocolsunlynxsmc
 
 /**
 This Prio Implementation has two protocols. The SNIPs verification and the aggregation of shares.

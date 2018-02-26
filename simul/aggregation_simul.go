@@ -83,7 +83,7 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 			return nil
 		}
 		start := time.Now()
-		root := rooti.(*protocolsUnLynxSMC.AggregationProtocol)
+		root := rooti.(*protocolsunlynxsmc.AggregationProtocol)
 		root.Start()
 		result := <-root.Feedback
 		log.Lvl1("res is ", result)
@@ -123,8 +123,8 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 //NewAggregationProtocolSimul is called on each node to send data
 func NewAggregationProtocolSimul(tni *onet.TreeNodeInstance, sim *AggregationSimulation) (onet.ProtocolInstance, error) {
 
-	protocol, err := protocolsUnLynxSMC.NewAggregationProtocol(tni)
-	pap := protocol.(*protocolsUnLynxSMC.AggregationProtocol)
+	protocol, err := protocolsunlynxsmc.NewAggregationProtocol(tni)
+	pap := protocol.(*protocolsunlynxsmc.AggregationProtocol)
 
 	pap.Modulus = share.IntModulus
 	pap.Shares = aggData

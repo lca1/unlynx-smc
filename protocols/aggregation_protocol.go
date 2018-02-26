@@ -1,4 +1,4 @@
-package protocolsUnLynxSMC
+package protocolsunlynxsmc
 
 import (
 	"errors"

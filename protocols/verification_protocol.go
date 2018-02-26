@@ -1,4 +1,4 @@
-package protocolsUnLynxSMC
+package protocolsunlynxsmc
 
 import (
 	"errors"
@@ -88,9 +88,9 @@ type VerificationProtocol struct {
 	ResponsceChannel chan StructResponse
 
 	//Data structure to perform range proofs
-	Request *libUnLynxSMC.Request
-	Pre     *libUnLynxSMC.CheckerPrecomp
-	Checker *libUnLynxSMC.Checker
+	Request *libunlynxsmc.Request
+	Pre     *libunlynxsmc.CheckerPrecomp
+	Checker *libunlynxsmc.Checker
 
 	//channel for proof
 	CorShareChannel chan StructCorShare
@@ -202,7 +202,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	check := p.Checker
 	check.SetReq(p.Request)
 
-	evalReplies := new(libUnLynxSMC.CorShare)
+	evalReplies := new(libunlynxsmc.CorShare)
 	//here evalReplies filled by evaluating on a point ( same for all protocols for a single client )
 	evalReplies = check.CorShare(p.Pre)
 
@@ -212,13 +212,13 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	p.Broadcast(&CorShare{evalReplies.ShareD.Bytes(), evalReplies.ShareE.Bytes()})
 
 	//Now they need to reconstruct it
-	evalRepliesFromAll := make([]*libUnLynxSMC.CorShare, 1)
+	evalRepliesFromAll := make([]*libunlynxsmc.CorShare, 1)
 	evalRepliesFromAll[0] = evalReplies
 
 	//for each server get the value broadcasted
 	for i := 0; i < p.Tree().Size()-1; i++ {
 		v := <-p.CorShareChannel
-		corshare := new(libUnLynxSMC.CorShare)
+		corshare := new(libunlynxsmc.CorShare)
 		corshare.ShareD = big.NewInt(0).SetBytes(v.CorShareD)
 		corshare.ShareE = big.NewInt(0).SetBytes(v.CorShareE)
 		evalRepliesFromAll = append(evalRepliesFromAll, corshare)
@@ -231,7 +231,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	//
 	// log.Lvl1(p.IsRoot())
 	//we need to do this on all servers as they all have a part of the beaver triple
-	finalReplies := make([]*libUnLynxSMC.OutShare, 1)
+	finalReplies := make([]*libunlynxsmc.OutShare, 1)
 
 	//random key is same for all, evaluate cor on a randomKey
 	finalReplies[0] = check.OutShare(cor, randomKey)
@@ -243,11 +243,11 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 
 	//then the leader  do all the rest, check if its valid
 	if p.IsRoot() {
-		finalRepliesAll := make([]*libUnLynxSMC.OutShare, 1)
+		finalRepliesAll := make([]*libunlynxsmc.OutShare, 1)
 		finalRepliesAll[0] = finalReplies[0]
 		for i := 0; i < p.Tree().Size()-1; i++ {
 			v := <-p.OutShareChannel
-			outShare := new(libUnLynxSMC.OutShare)
+			outShare := new(libunlynxsmc.OutShare)
 			outShare.Check = big.NewInt(0).SetBytes(v.OutShare.Out)
 			finalRepliesAll = append(finalRepliesAll, outShare)
 		}

@@ -23,7 +23,7 @@ import (
 //variable to choose the secret once and split them, as you assume client have their secret already split
 //in  a vector of size #servers. Means the number of server is supposed to be public
 var ckt []*circuit.Circuit
-var req []*libUnLynxSMC.Request
+var req []*libunlynxsmc.Request
 var mod = share.IntModulus
 var randomPoint = utils.RandInt(mod)
 var secretBitLen []int64
@@ -100,7 +100,7 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 				if err != nil {
 					return
 				}
-				root := rooti.(*protocolsUnLynxSMC.VerificationProtocol)
+				root := rooti.(*protocolsunlynxsmc.VerificationProtocol)
 
 				root.Start()
 				<-root.AggregateData
@@ -130,29 +130,29 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 //NewVerificationProtocolSimul is the function called on each node to send data
 func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationSimulation) (onet.ProtocolInstance, error) {
 
-	protocol, err := protocolsUnLynxSMC.NewVerificationProtocol(tni)
-	pap := protocol.(*protocolsUnLynxSMC.VerificationProtocol)
+	protocol, err := protocolsunlynxsmc.NewVerificationProtocol(tni)
+	pap := protocol.(*protocolsunlynxsmc.VerificationProtocol)
 
-	pap.Request = new(libUnLynxSMC.Request)
-	pap.Checker = new(libUnLynxSMC.Checker)
-	pap.Pre = new(libUnLynxSMC.CheckerPrecomp)
+	pap.Request = new(libunlynxsmc.Request)
+	pap.Checker = new(libunlynxsmc.Checker)
+	pap.Pre = new(libunlynxsmc.CheckerPrecomp)
 
 	//simulate sending of client to protocol, !! each server must have a different circuit which has the same value for
 	//each client submission
 
 	pap.Request = req[pap.Index()]
-	pap.Checker = libUnLynxSMC.NewChecker(ckt[tni.Index()], pap.Index(), 0)
-	pap.Pre = libUnLynxSMC.NewCheckerPrecomp(ckt[tni.Index()])
+	pap.Checker = libunlynxsmc.NewChecker(ckt[tni.Index()], pap.Index(), 0)
+	pap.Pre = libunlynxsmc.NewCheckerPrecomp(ckt[tni.Index()])
 	pap.Pre.SetCheckerPrecomp(randomPoint)
 
 	return protocol, err
 }
 
 //create cipher text for test from a config file in UnLynxSMC
-func createCipherSet(numberClient, numberServer int) ([]*libUnLynxSMC.Request, []*circuit.Circuit) {
+func createCipherSet(numberClient, numberServer int) ([]*libunlynxsmc.Request, []*circuit.Circuit) {
 
 	circuit := make([]*circuit.Circuit, 0)
-	result := make([]*libUnLynxSMC.Request, numberServer)
+	result := make([]*libunlynxsmc.Request, numberServer)
 	secretBitLen = make([]int64, numberServer)
 
 	secret := config.LoadFile("/home/max/Documents/go/src/prio/eval/cell-geneva.conf")
@@ -160,11 +160,11 @@ func createCipherSet(numberClient, numberServer int) ([]*libUnLynxSMC.Request, [
 	for j := 0; j < len(secret.Fields); j++ {
 		fields = append(fields, &(secret.Fields[j]))
 	}
-	result = libUnLynxSMC.ClientRequest(fields, numberServer, 0)
+	result = libunlynxsmc.ClientRequest(fields, numberServer, 0)
 
 	for j := 0; j < numberServer; j++ {
 
-		test := libUnLynxSMC.ConfigToCircuit(fields)
+		test := libunlynxsmc.ConfigToCircuit(fields)
 		circuit = append(circuit, test)
 	}
 

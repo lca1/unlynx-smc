@@ -1,4 +1,4 @@
-package serviceUnLynxSMC
+package serviceunlynxsmc
 
 /**
 Implementation of a data provider. All functions are used with the client name to specify the communication way but this client is in fact a data provider !
@@ -52,7 +52,7 @@ func (c *API) SendRequest(entities *onet.Roster) (string, error) {
 	//dataSplited := prio_utils.Share(c.modulus,numServer,c.secretValue)
 
 	//For the moment for almost all type, they are chosen randomly in function of the number of bits passed
-	requests := libUnLynxSMC.ClientRequest(c.secretValue, numServer, 0)
+	requests := libunlynxsmc.ClientRequest(c.secretValue, numServer, 0)
 
 	//Conversion of field as protoBuf do not take int only int64
 	circuitConfig := make([]ConfigByte, len(c.secretValue))

@@ -1,4 +1,4 @@
-package libUnLynxSMC
+package libunlynxsmc
 
 import (
 	"github.com/henrycg/prio/circuit"

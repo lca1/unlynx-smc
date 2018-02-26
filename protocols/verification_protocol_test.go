@@ -1,4 +1,4 @@
-package protocolsUnLynxSMC
+package protocolsunlynxsmc
 
 import (
 	"gopkg.in/dedis/onet.v1"
@@ -28,7 +28,7 @@ var nbServ = 2
 //var req = prio_utils.ClientRequest(serv1Share, 0)
 //var datas = []*config.Field{&config.Field{Name:"test",Type:config.FieldType(byte(5)),LinRegBits:[]int{14,7,1,2,7,8,1,3,8,1,8,4,4,1}},&config.Field{Name:"Test2",Type:config.FieldType(byte(5)),LinRegBits:[]int{1,2,5,2,7,3,8,1,8,1,8,3,6,12}}}
 var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: 2}}
-var req = libUnLynxSMC.ClientRequest(datas, nbServ, 0)
+var req = libunlynxsmc.ClientRequest(datas, nbServ, 0)
 var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestVerificationProtocol(t *testing.T) {
@@ -65,18 +65,18 @@ func NewVerificationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, err
 	protocol := pi.(*VerificationProtocol)
 
 	//set circuit
-	ckt := libUnLynxSMC.ConfigToCircuit(datas)
+	ckt := libunlynxsmc.ConfigToCircuit(datas)
 
 	//set request, checker and preChecker
-	protocol.Request = new(libUnLynxSMC.Request)
+	protocol.Request = new(libunlynxsmc.Request)
 	protocol.Request = req[tni.Index()]
 
-	protocol.Checker = new(libUnLynxSMC.Checker)
-	protocol.Checker = libUnLynxSMC.NewChecker(ckt, protocol.Index(), 0)
+	protocol.Checker = new(libunlynxsmc.Checker)
+	protocol.Checker = libunlynxsmc.NewChecker(ckt, protocol.Index(), 0)
 
-	protocol.Pre = new(libUnLynxSMC.CheckerPrecomp)
+	protocol.Pre = new(libunlynxsmc.CheckerPrecomp)
 
-	protocol.Pre = libUnLynxSMC.NewCheckerPrecomp(ckt)
+	protocol.Pre = libunlynxsmc.NewCheckerPrecomp(ckt)
 	protocol.Pre.SetCheckerPrecomp(randomPoint)
 
 	return protocol, err

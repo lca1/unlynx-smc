@@ -1,4 +1,4 @@
-package serviceUnLynxSMC
+package serviceunlynxsmc
 
 /**
 This service instantiates a SMC-Protocol, where DP answer a server query. The part where a querier
@@ -88,7 +88,7 @@ type Service struct {
 	//
 	Request *concurrent.ConcurrentMap
 	AggData [][]*big.Int
-	Proto   *protocolsUnLynxSMC.VerificationProtocol
+	Proto   *protocolsunlynxsmc.VerificationProtocol
 	Count   int64
 }
 
@@ -144,8 +144,8 @@ func (s *Service) VerifyPhase(requestID string) (bool, error) {
 	tmp := castToRequest(s.Request.Get(requestID))
 	isAccepted := false
 	if s.ServerIdentity().Equal(tmp.Leader) {
-		pi, err := s.StartProtocol(protocolsUnLynxSMC.VerificationProtocolName, requestID)
-		log.Lvl1(pi.(*protocolsUnLynxSMC.VerificationProtocol).ServerIdentity())
+		pi, err := s.StartProtocol(protocolsunlynxsmc.VerificationProtocolName, requestID)
+		log.Lvl1(pi.(*protocolsunlynxsmc.VerificationProtocol).ServerIdentity())
 
 		if err != nil {
 			return isAccepted, err
@@ -165,13 +165,13 @@ func (s *Service) VerifyPhase(requestID string) (bool, error) {
 
 //ExecuteAggregation aggregates if you have more than 2 data points
 func (s *Service) ExecuteAggregation(exe *ExecAgg) (network.Message, onet.ClientError) {
-	pi, err := s.StartProtocol(protocolsUnLynxSMC.AggregationProtocolName, exe.ID)
+	pi, err := s.StartProtocol(protocolsunlynxsmc.AggregationProtocolName, exe.ID)
 
 	if err != nil {
 		log.Fatal("Error in the Aggregation Phase")
 	}
-	if len(pi.(*protocolsUnLynxSMC.AggregationProtocol).Shares) >= 2 {
-		aggRes := <-pi.(*protocolsUnLynxSMC.AggregationProtocol).Feedback
+	if len(pi.(*protocolsunlynxsmc.AggregationProtocol).Shares) >= 2 {
+		aggRes := <-pi.(*protocolsunlynxsmc.AggregationProtocol).Feedback
 		return &AggResult{aggRes[0].Bytes()}, nil
 	}
 
@@ -221,8 +221,8 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 	request := castToRequest(s.Request.Get(string(conf.Data)))
 
 	switch tn.ProtocolName() {
-	case protocolsUnLynxSMC.VerificationProtocolName:
-		pi, err = protocolsUnLynxSMC.NewVerificationProtocol(tn)
+	case protocolsunlynxsmc.VerificationProtocolName:
+		pi, err = protocolsunlynxsmc.NewVerificationProtocol(tn)
 
 		circConf := make([]*config.Field, 0)
 		for i := 0; i < len(request.CircuitConfig); i++ {
@@ -232,7 +232,7 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 			}
 			circConf = append(circConf, &config.Field{Name: request.CircuitConfig[i].Name, Type: config.FieldType(request.CircuitConfig[i].Type), IntBits: int(request.CircuitConfig[i].IntBits), LinRegBits: linReg, IntPow: int(request.CircuitConfig[i].IntPow), CountMinBuckets: int(request.CircuitConfig[i].CountMinBuckets), CountMinHashes: int(request.CircuitConfig[i].CountMinHashes)})
 		}
-		ckt := libUnLynxSMC.ConfigToCircuit(circConf)
+		ckt := libunlynxsmc.ConfigToCircuit(circConf)
 
 		tripleShareReq := new(triple.Share)
 		tripleShareReq.ShareA = big.NewInt(0).SetBytes(request.ShareA)
@@ -246,24 +246,24 @@ func (s *Service) NewProtocol(tn *onet.TreeNodeInstance, conf *onet.GenericConfi
 			hintReq.Delta = append(hintReq.Delta, big.NewInt(0).SetBytes(v))
 		}
 
-		protoReq := libUnLynxSMC.Request{RequestID: request.RequestID, TripleShare: tripleShareReq, Hint: hintReq}
-		pi.(*protocolsUnLynxSMC.VerificationProtocol).Request = &protoReq
-		pi.(*protocolsUnLynxSMC.VerificationProtocol).Checker = libUnLynxSMC.NewChecker(ckt, tn.Index(), 0)
-		pi.(*protocolsUnLynxSMC.VerificationProtocol).Pre = libUnLynxSMC.NewCheckerPrecomp(ckt)
+		protoReq := libunlynxsmc.Request{RequestID: request.RequestID, TripleShare: tripleShareReq, Hint: hintReq}
+		pi.(*protocolsunlynxsmc.VerificationProtocol).Request = &protoReq
+		pi.(*protocolsunlynxsmc.VerificationProtocol).Checker = libunlynxsmc.NewChecker(ckt, tn.Index(), 0)
+		pi.(*protocolsunlynxsmc.VerificationProtocol).Pre = libunlynxsmc.NewCheckerPrecomp(ckt)
 		rdm := big.NewInt(0).SetBytes(request.RandomPoint)
-		pi.(*protocolsUnLynxSMC.VerificationProtocol).Pre.SetCheckerPrecomp(rdm)
-		s.Proto = pi.(*protocolsUnLynxSMC.VerificationProtocol)
+		pi.(*protocolsunlynxsmc.VerificationProtocol).Pre.SetCheckerPrecomp(rdm)
+		s.Proto = pi.(*protocolsunlynxsmc.VerificationProtocol)
 
 		if err != nil {
 			log.Lvl1("Error")
 			return nil, err
 		}
 
-	case protocolsUnLynxSMC.AggregationProtocolName:
-		pi, err = protocolsUnLynxSMC.NewAggregationProtocol(tn)
+	case protocolsunlynxsmc.AggregationProtocolName:
+		pi, err = protocolsunlynxsmc.NewAggregationProtocol(tn)
 
-		pi.(*protocolsUnLynxSMC.AggregationProtocol).Modulus = share.IntModulus
-		pi.(*protocolsUnLynxSMC.AggregationProtocol).Shares = s.AggData
+		pi.(*protocolsunlynxsmc.AggregationProtocol).Modulus = share.IntModulus
+		pi.(*protocolsunlynxsmc.AggregationProtocol).Shares = s.AggData
 		if err != nil {
 			log.Lvl1("Error")
 			return nil, err

@@ -1,4 +1,4 @@
-package libUnLynxSMC
+package libunlynxsmc
 
 /**
 Most of the function here literally copy/cut from Prio. Others are also copy cut with modifications

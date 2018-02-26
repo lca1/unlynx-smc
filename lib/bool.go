@@ -1,4 +1,4 @@
-package libUnLynxSMC
+package libunlynxsmc
 
 import (
 	"math/big"
