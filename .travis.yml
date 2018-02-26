@@ -15,7 +15,8 @@ before_install:
 - sudo make check
 - sudo make install
 - sudo ldconfig
-# install MPFR
+- cd ..
+# install MPFR 4.0.1
 - sudo wget http://www.mpfr.org/mpfr-current/mpfr-4.0.1.tar.bz2
 - sudo bunzip2 mpfr-4.0.1.tar.bz2
 - sudo tar xvf mpfr-4.0.1.tar
@@ -25,7 +26,8 @@ before_install:
 - sudo make check
 - sudo make install
 - sudo ldconfig
-# install FLINT
+- cd ..
+# install FLINT 2.5.2
 - sudo wget http://www.flintlib.org/flint-2.5.2.tar.gz
 - sudo tar xzf flint-2.5.2.tar.gz
 - cd flint-2.5.2
@@ -34,6 +36,7 @@ before_install:
 - sudo make check
 - sudo make install
 - sudo ldconfig
+- cd ..
 install:
 - go get -t ./...
 - go get golang.org/x/tools/cmd/cover
