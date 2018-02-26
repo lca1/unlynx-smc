@@ -15,7 +15,7 @@ before_install:
 - sudo wget http://www.mpfr.org/mpfr-current/mpfr-4.0.1.tar.bz2
 - sudo bunzip2 mpfr-4.0.1.tar.bz2
 - sudo tar xvf mpfr-4.0.1.tar
-- sudo cd mpfr-4.0.1
+- cd mpfr-4.0.1
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
 # install FLINT
