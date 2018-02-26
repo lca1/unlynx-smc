@@ -4,6 +4,7 @@ go:
 before_install:
 - sudo apt-get -qq update
 - sudo apt-get install -y wget bzip2
+- sudo apt-get remove libgmp3-dev
 # install GMP 6.1.0
 - sudo wget https://gmplib.org/download/gmp/gmp-6.1.2.tar.bz2
 - sudo bunzip2 gmp-6.1.2.tar.bz2
@@ -18,8 +19,7 @@ before_install:
 - cd mpfr-4.0.1
 - curl http://www.mpfr.org/mpfr-4.0.1/allpatches | patch -N -Z -p1
 - sudo ./configure
-- sudo make -C deps distclean-gmp
-- sudo make check && sudo make install
+- sudo make && sudo make check && sudo make install
 # install FLINT
 - sudo wget http://www.flintlib.org/flint-2.5.2.tar.gz
 - sudo tar xzf flint-2.5.2.tar.gz
