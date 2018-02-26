@@ -11,13 +11,6 @@ before_install:
 - cd gmp-6.1.2
 - sudo ./configure
 - sudo make && sudo make check && sudo make install
-# install MPIR
-- sudo wget http://www.mpir.org/mpir-3.0.0.tar.bz2
-- sudo bunzip2 mpir-3.0.0.tar.bz2
-- sudo tar xvf mpir-3.0.0.tar
-- cd mpir-3.0.0
-- sudo ./configure
-- sudo make && sudo make check && sudo make install
 # install MPFR
 - sudo wget http://www.mpfr.org/mpfr-current/mpfr-4.0.1.tar.bz2
 - sudo bunzip2 mpfr-4.0.1.tar.bz2
