@@ -3,9 +3,34 @@ go:
 - 1.x
 before_install:
 - sudo apt-get -qq update
-- sudo apt-get install -y libgmp3-dev
-- sudo apt-get install -y libmpfr-dev libmpfr-doc libmpfr4 libmpfr4-dbg
-- sudo apt-get install -y libflint-1.011 libflint-dev
+- sudo apt-get install -y wget bunzip2
+# install GMP 6.1.0
+- wget https://gmplib.org/gmp-6.1.2.tar.bz2
+- bunzip2 gmp-6.1.2.tar.bz2
+- tar xvf gmp-6.1.2.tar
+- cd gmp-6.1.2
+- ./configure
+- make && make check && make install
+# install MPIR
+- wget http://www.mpir.org/mpir-3.0.0.tar.bz2
+- bunzip2 mpir-3.0.0.tar.bz2
+- tar xvf mpir-3.0.0.tar
+- cd mpir-3.0.0
+- ./configure
+- make && make check && make install
+# install MPFR
+- wget http://www.mpfr.org/mpfr-4.0.1.tar.bz2
+- bunzip2 mpfr-4.0.1.tar.bz2
+- tar xvf mpfr-4.0.1.tar
+- cd mpfr-4.0.1
+- ./configure
+- make && make check && make install
+# install FLINT
+- wget http://www.flintlib.org/lint-2.5.2.tar.gz
+- tar -xzf lint-2.5.2.tar.gz
+- cd lint-2.5.2
+- ./configure
+- make && make check && make install
 install:
 - go get -t ./...
 - go get golang.org/x/tools/cmd/cover
