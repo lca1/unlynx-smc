@@ -91,7 +91,7 @@ func Encode(x *big.Int) []*big.Int {
 
 	lenR := len(result)
 	// if we use a 63-bit modulus
-	if lenR > 0 && lenR <=64 {
+	if lenR > 0 && lenR <= 64 {
 		result = appendModulus(63, result)
 		// if we use a 87-bit modulus
 	} else if lenR > 64 && lenR <= 88 {
