@@ -81,14 +81,35 @@ func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, erro
 	return protocol, err
 }
 
-//Encoding of simple Sum AFE
+//Encoding of simple Sum AFE. Depending on the size of the modulus we append bits to the end
 func Encode(x *big.Int) []*big.Int {
 	result := make([]*big.Int, 1)
 	result[0] = x
 	for j := 0; j < x.BitLen(); j++ {
 		result = append(result, big.NewInt(int64(x.Bit(j))))
 	}
-	for len(result) < 64 {
+
+	lenR := len(result)
+	// if we use a 63-bit modulus
+	if lenR > 0 && lenR <=64 {
+		result = appendModulus(63, result)
+		// if we use a 87-bit modulus
+	} else if lenR > 64 && lenR <= 88 {
+		result = appendModulus(87, result)
+		// if we use a 102-bit modulus
+	} else if lenR > 88 && lenR <= 104 {
+		result = appendModulus(103, result)
+		// if we use a 265-bit modulus
+	} else if lenR > 104 && lenR <= 266 {
+		result = appendModulus(265, result)
+	}
+
+	return result
+}
+
+// appendModulus appends the result array with enough bits to fit the chosen x-bit modulus
+func appendModulus(bitModulus int, result []*big.Int) []*big.Int {
+	for len(result) <= bitModulus {
 		result = append(result, big.NewInt(0))
 	}
 	return result
