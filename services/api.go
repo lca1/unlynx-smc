@@ -1,4 +1,4 @@
-package serviceunlynxsmc
+package servicesunlynxsmc
 
 /**
 Implementation of a data provider. All functions are used with the client name to specify the communication way but this client is in fact a data provider !

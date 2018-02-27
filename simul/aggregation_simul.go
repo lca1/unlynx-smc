@@ -74,7 +74,7 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 
 		aggData = createAggData(sim.NbrRequestByProto, config.Tree.Size())
 
-		roundTime := libUnLynx.StartTimer("Aggregation(Simulation")
+		roundTime := libunlynx.StartTimer("Aggregation(Simulation")
 		//new variable for nbValidation
 		//start := time.Now()
 
@@ -89,9 +89,9 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 		log.Lvl1("res is ", result)
 		log.Lvl1(sumCipher)
 		//time := time.Since(start)
-		libUnLynx.EndTimer(roundTime)
+		libunlynx.EndTimer(roundTime)
 		time := time.Since(start)
-		libUnLynx.EndTimer(roundTime)
+		libunlynx.EndTimer(roundTime)
 		filename := "time"
 		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 		if err != nil {

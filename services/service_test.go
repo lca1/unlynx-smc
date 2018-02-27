@@ -1,4 +1,4 @@
-package serviceunlynxsmc_test
+package servicesunlynxsmc_test
 
 import (
 	"github.com/lca1/unlynx-smc/services"
@@ -19,11 +19,11 @@ func TestServiceUnLynxSMC(t *testing.T) {
 	_, el, _ := local.GenTree(nbServers, false)
 	defer local.CloseAll()
 
-	dataPro := make([]*serviceunlynxsmc.API, nbHost)
+	dataPro := make([]*servicesunlynxsmc.API, nbHost)
 
 	//init
 	for i, _ := range dataPro {
-		dataPro[i] = serviceunlynxsmc.NewUnLynxSMCClient("DP" + string(i))
+		dataPro[i] = servicesunlynxsmc.NewUnLynxSMCClient("DP" + string(i))
 	}
 
 	//log.Lvl1("Secret value is ", (client.secretValue[0].IntBits) ,"bits")

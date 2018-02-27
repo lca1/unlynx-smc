@@ -89,9 +89,9 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 
 		req, ckt = createCipherSet(sim.NbrRequestByProto, config.Tree.Size())
 
-		roundTime := libUnLynx.StartTimer("Verification(Simulation")
+		roundTime := libunlynx.StartTimer("Verification(Simulation")
 		//new variable for nbValidation
-		wg := libUnLynx.StartParallelize(sim.NbrValidation)
+		wg := libunlynx.StartParallelize(sim.NbrValidation)
 		start := time.Now()
 		for i := 0; i < sim.NbrValidation; i++ {
 			go func() {
@@ -108,9 +108,9 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 			}()
 
 		}
-		libUnLynx.EndParallelize(wg)
+		libunlynx.EndParallelize(wg)
 		time := time.Since(start)
-		libUnLynx.EndTimer(roundTime)
+		libunlynx.EndTimer(roundTime)
 		filename := "time"
 		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 		if err != nil {

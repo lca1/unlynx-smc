@@ -1,4 +1,4 @@
-package serviceunlynxsmc
+package servicesunlynxsmc
 
 /**
 This service instantiates a SMC-Protocol, where DP answer a server query. The part where a querier
