@@ -1,12 +1,12 @@
 package libunlynxsmc
 
 import (
+	"github.com/dedis/onet/log"
 	"github.com/henrycg/prio/circuit"
 	"github.com/henrycg/prio/poly"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/triple"
 	"github.com/henrycg/prio/utils"
-	"gopkg.in/dedis/onet.v1/log"
 	"math/big"
 
 	"github.com/henrycg/prio/config"

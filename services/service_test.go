@@ -1,9 +1,10 @@
 package servicesunlynxsmc_test
 
 import (
+	"github.com/dedis/onet"
+	"github.com/dedis/onet/log"
 	"github.com/lca1/unlynx-smc/services"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"github.com/lca1/unlynx/lib"
 	"testing"
 )
 
@@ -12,7 +13,7 @@ var nbServers = 5
 
 func TestServiceUnLynxSMC(t *testing.T) {
 	//log.SetDebugVisible(3)
-	local := onet.NewLocalTest()
+	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// generate 5 hosts, they don't connect, they process messages, and they
 	// don't register the tree or entity list

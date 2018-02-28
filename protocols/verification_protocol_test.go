@@ -1,8 +1,8 @@
 package protocolsunlynxsmc
 
 import (
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"github.com/dedis/onet"
+	"github.com/dedis/onet/log"
 	"testing"
 	"time"
 
@@ -10,6 +10,7 @@ import (
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
 	"github.com/lca1/unlynx-smc/lib"
+	"github.com/lca1/unlynx/lib"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -33,7 +34,7 @@ var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestVerificationProtocol(t *testing.T) {
 
-	local := onet.NewLocalTest()
+	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("VerificationTest", NewVerificationTest)

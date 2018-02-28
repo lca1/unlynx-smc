@@ -1,14 +1,14 @@
 package protocolsunlynxsmc
 
 import (
-	"gopkg.in/dedis/onet.v1"
+	"github.com/dedis/onet"
 	"testing"
 	"time"
 
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
-
+	"github.com/dedis/onet/log"
+	"github.com/dedis/onet/network"
 	"github.com/henrycg/prio/share"
+	"github.com/lca1/unlynx/lib"
 	"github.com/stretchr/testify/assert"
 	"math/big"
 )
@@ -27,7 +27,7 @@ var secret2Share = share.Share(share.IntModulus, nbS, secret2)
 
 func TestAggregationProtocol(t *testing.T) {
 
-	local := onet.NewLocalTest()
+	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("AggregationTest", NewAggregationTest)

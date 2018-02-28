@@ -1,15 +1,16 @@
 package servicesunlynxsmc
 
 /**
-Implementation of a data provider. All functions are used with the client name to specify the communication way but this client is in fact a data provider !
+Implementation of a data provider. All functions are used with the client name to specify the communication way but this client is in fact a data provider!
 */
 import (
+	"github.com/dedis/onet"
+	"github.com/dedis/onet/log"
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
 	"github.com/lca1/unlynx-smc/lib"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
+	"github.com/lca1/unlynx/lib"
 	"math/big"
 )
 
@@ -36,7 +37,7 @@ type ConfigByte struct {
 func NewUnLynxSMCClient(clientID string) *API {
 
 	newClient := &API{
-		Client:      onet.NewClient(ServiceName),
+		Client:      onet.NewClient(libunlynx.SuiTe, ServiceName),
 		ClientID:    clientID,
 		secretValue: []*config.Field{&config.Field{Name: "Simul", Type: config.FieldType(byte(0)), IntBits: 2}},
 		modulus:     share.IntModulus,
