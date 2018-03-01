@@ -7,14 +7,14 @@ verified and aggregated. We use the AFE of a sum directly implemented in aggrega
 */
 
 import (
+	"github.com/dedis/onet"
+	"github.com/dedis/onet/log"
+	"github.com/dedis/onet/network"
 	"github.com/fanliao/go-concurrentMap"
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/triple"
 	"github.com/henrycg/prio/utils"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/log"
-	"gopkg.in/dedis/onet.v1/network"
 	"math/big"
 
 	"github.com/lca1/unlynx-smc/lib"
@@ -72,7 +72,7 @@ type MsgTypes struct {
 var msgTypes = MsgTypes{}
 
 func init() {
-	onet.RegisterNewService(ServiceName, NewService)
+	onet.RegisterNewService(ServiceName, NewServiceFunc)
 	msgTypes.msgProofDoing = network.RegisterMessage(&DataSentClient{})
 	msgTypes.msgProofExec = network.RegisterMessage(&ExecRequest{})
 	msgTypes.msgAgg = network.RegisterMessage(ExecAgg{})
@@ -92,8 +92,8 @@ type Service struct {
 	Count   int64
 }
 
-//NewService creates a new UnLynxSMC Service.
-func NewService(c *onet.Context) onet.Service {
+//NewServiceFunc creates a new UnLynxSMC Service.
+func NewServiceFunc(c *onet.Context) (onet.Service, error) {
 	newUnLynxSMCInstance := &Service{
 		ServiceProcessor: onet.NewServiceProcessor(c),
 		Request:          concurrent.NewConcurrentMap(),
@@ -111,11 +111,11 @@ func NewService(c *onet.Context) onet.Service {
 		log.Fatal("Wrong Handler.", cerr)
 	}
 
-	return newUnLynxSMCInstance
+	return newUnLynxSMCInstance, nil
 }
 
 //HandleRequest handles a request from a client by registering it
-func (s *Service) HandleRequest(requestFromClient *DataSentClient) (network.Message, onet.ClientError) {
+func (s *Service) HandleRequest(requestFromClient *DataSentClient) (network.Message, error) {
 
 	if requestFromClient == nil {
 		return nil, nil
@@ -128,7 +128,7 @@ func (s *Service) HandleRequest(requestFromClient *DataSentClient) (network.Mess
 }
 
 //ExecuteRequest executes the verification of a request
-func (s *Service) ExecuteRequest(exe *ExecRequest) (network.Message, onet.ClientError) {
+func (s *Service) ExecuteRequest(exe *ExecRequest) (network.Message, error) {
 	acc, err := s.VerifyPhase(exe.ID)
 	if err != nil {
 		log.Fatal("Error in the Verify Phase")
@@ -164,7 +164,7 @@ func (s *Service) VerifyPhase(requestID string) (bool, error) {
 }
 
 //ExecuteAggregation aggregates if you have more than 2 data points
-func (s *Service) ExecuteAggregation(exe *ExecAgg) (network.Message, onet.ClientError) {
+func (s *Service) ExecuteAggregation(exe *ExecAgg) (network.Message, error) {
 	pi, err := s.StartProtocol(protocolsunlynxsmc.AggregationProtocolName, exe.ID)
 
 	if err != nil {

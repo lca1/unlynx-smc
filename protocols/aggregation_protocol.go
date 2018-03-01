@@ -2,8 +2,8 @@ package protocolsunlynxsmc
 
 import (
 	"errors"
-	"gopkg.in/dedis/onet.v1"
-	"gopkg.in/dedis/onet.v1/network"
+	"github.com/dedis/onet"
+	"github.com/dedis/onet/network"
 	"math/big"
 )
 
