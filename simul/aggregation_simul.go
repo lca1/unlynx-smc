@@ -9,7 +9,6 @@ import (
 	"github.com/henrycg/prio/share"
 	"github.com/lca1/unlynx-smc/protocols"
 	"github.com/lca1/unlynx/lib"
-	"os"
 	"time"
 )
 
@@ -92,30 +91,18 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 		libunlynx.EndTimer(roundTime)
 		time := time.Since(start)
 		libunlynx.EndTimer(roundTime)
-		filename := "time"
+
+		log.LLvl1("Aggregation simulation took:", time)
+
+		/*filename := "time"
 		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
 		if err != nil {
 			panic(err)
 		}
-
-		defer f.Close()
-
 		if _, err = f.WriteString(time.String() + "\n"); err != nil {
 			panic(err)
 		}
-
-		/*filename := "/home/unlynx/go/src/unlynx/simul/time"
-		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
-		if err != nil {
-			panic(err)
-		}
-
-		defer f.Close()
-
-		if _, err = f.WriteString(time.String() + "\n"); err != nil {
-			panic(err)
-		}*/
-
+		f.Close()*/
 	}
 	return nil
 }

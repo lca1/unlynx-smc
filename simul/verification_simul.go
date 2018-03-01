@@ -16,7 +16,6 @@ import (
 	"github.com/henrycg/prio/utils"
 	"github.com/lca1/unlynx-smc/lib"
 	"github.com/lca1/unlynx-smc/protocols"
-	"os"
 	"time"
 )
 
@@ -111,18 +110,18 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 		libunlynx.EndParallelize(wg)
 		time := time.Since(start)
 		libunlynx.EndTimer(roundTime)
-		filename := "time"
-		f, err := os.OpenFile(filename, os.O_APPEND|os.O_WRONLY, 0600)
+
+		log.LLvl1("Verification simulation took:", time)
+
+		/*filename := "../../../../lca1/unlynx-smc/simul/time"
+		f, err := os.Create(filename, os.O_APPEND|os.O_WRONLY, 0600)
 		if err != nil {
 			panic(err)
 		}
-
-		defer f.Close()
-
 		if _, err = f.WriteString(time.String() + "\n"); err != nil {
 			panic(err)
 		}
-
+		f.Close()*/
 	}
 	return nil
 }
@@ -155,7 +154,7 @@ func createCipherSet(numberClient, numberServer int) ([]*libunlynxsmc.Request, [
 	result := make([]*libunlynxsmc.Request, numberServer)
 	secretBitLen = make([]int64, numberServer)
 
-	secret := config.LoadFile("/home/max/Documents/go/src/prio/eval/cell-geneva.conf")
+	secret := config.LoadFile("../../../../henrycg/prio/eval/cell-geneva.conf")
 	fields := make([]*config.Field, 0)
 	for j := 0; j < len(secret.Fields); j++ {
 		fields = append(fields, &(secret.Fields[j]))
