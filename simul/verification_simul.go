@@ -1,21 +1,19 @@
 package main
 
 import (
+	"crypto/rand"
+	"errors"
 	"github.com/BurntSushi/toml"
 	"github.com/dedis/onet"
 	"github.com/dedis/onet/log"
-
-	"crypto/rand"
-	"errors"
-	"github.com/lca1/unlynx/lib"
-	"math/big"
-
 	"github.com/henrycg/prio/circuit"
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
 	"github.com/lca1/unlynx-smc/lib"
 	"github.com/lca1/unlynx-smc/protocols"
+	"github.com/lca1/unlynx/lib"
+	"math/big"
 	"time"
 )
 

@@ -1,10 +1,10 @@
 package main_test
 
 import (
-	"gopkg.in/dedis/onet.v1/simul"
+	"github.com/dedis/onet/simul"
 	"testing"
 )
 
 func TestSimulation(t *testing.T) {
-	simul.Start("runfiles/verification.toml")
+	simul.Start("runfiles/verification.toml", "runfiles/aggregation.toml")
 }

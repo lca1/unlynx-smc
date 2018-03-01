@@ -4,11 +4,10 @@ import (
 	"github.com/BurntSushi/toml"
 	"github.com/dedis/onet"
 	"github.com/dedis/onet/log"
-	"math/big"
-
 	"github.com/henrycg/prio/share"
 	"github.com/lca1/unlynx-smc/protocols"
 	"github.com/lca1/unlynx/lib"
+	"math/big"
 	"time"
 )
 

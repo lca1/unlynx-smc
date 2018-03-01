@@ -224,7 +224,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 		evalRepliesFromAll = append(evalRepliesFromAll, corshare)
 	}
 
-	//cor is same for all server and cannot be transfered it that's why you transfer the shares
+	//cor is same for all server and cannot be transferred it that's why you transfer the shares
 	cor := check.Cor(evalRepliesFromAll)
 
 	//log.Lvl1(p.Index(), " All cor should be the same", cor)
