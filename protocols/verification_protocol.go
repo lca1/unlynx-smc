@@ -201,7 +201,6 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	//each protocol has its checker and it's request ( 1 request per server per client request)
 	check := p.Checker
 	check.SetReq(p.Request)
-
 	evalReplies := new(libunlynxsmc.CorShare)
 	//here evalReplies filled by evaluating on a point ( same for all protocols for a single client )
 	evalReplies = check.CorShare(p.Pre)

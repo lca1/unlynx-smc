@@ -69,7 +69,7 @@ func (c *Checker) SetReq(req *Request) {
 
 //CheckerPrecomp is used to evaluate polynomials.
 type CheckerPrecomp struct {
-	x *big.Int
+	X *big.Int
 
 	degN  *poly.BatchPre
 	deg2N *poly.BatchPre
@@ -80,7 +80,7 @@ type CheckerPrecomp struct {
 
 //SetCheckerPrecomp set the Evaluation point in the CheckerPrecomp structure.
 func (pre *CheckerPrecomp) SetCheckerPrecomp(x *big.Int) {
-	pre.x = x
+	pre.X = x
 	pre.xN = pre.degN.NewEvalPoint(x)
 	pre.x2N = pre.deg2N.NewEvalPoint(x)
 }
@@ -118,8 +118,8 @@ func (c *Checker) evalPoly(pre *CheckerPrecomp) {
 	c.pointsH[0] = c.Prg.Get(c.mod)
 
 	// For all multiplication triples a_i * b_i = c_i,
-	//    polynomial [f(x)] has [f(i)] = [a_i]
-	//    polynomial [g(x)] has [g(i)] = [b_i]
+	//    polynomial [f(X)] has [f(i)] = [a_i]
+	//    polynomial [g(X)] has [g(i)] = [b_i]
 	for i := 1; i < c.n; i++ {
 		c.pointsF[i] = mulGates[i-1].ParentL.WireValue
 		c.pointsG[i] = mulGates[i-1].ParentR.WireValue
@@ -139,11 +139,11 @@ func (c *Checker) evalPoly(pre *CheckerPrecomp) {
 
 	c.evalF.Set(pre.xN.Eval(c.pointsF))
 	c.evalG.Set(pre.xN.Eval(c.pointsG))
-	c.evalG.Mul(c.evalG, pre.x)
+	c.evalG.Mul(c.evalG, pre.X)
 	c.evalG.Mod(c.evalG, c.mod)
 
 	c.evalH.Set(pre.x2N.Eval(c.pointsH))
-	c.evalH.Mul(c.evalH, pre.x)
+	c.evalH.Mul(c.evalH, pre.X)
 	c.evalH.Mod(c.evalH, c.mod)
 }
 
@@ -157,9 +157,9 @@ func (c *Checker) CorShare(pre *CheckerPrecomp) *CorShare {
 	out.ShareE = new(big.Int)
 
 	// Let the multiplication triple be: (a, b, c)
-	// where a*b = c. We want to compute z = x*y.
+	// where a*b = c. We want to compute z = X*y.
 
-	// [d]_i = [x]_i - [a]_i
+	// [d]_i = [X]_i - [a]_i
 	out.ShareD.Sub(c.evalF, c.req.TripleShare.ShareA)
 	out.ShareD.Mod(out.ShareD, c.mod)
 

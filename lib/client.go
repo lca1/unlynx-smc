@@ -147,7 +147,7 @@ func sharePolynomials(ckt *circuit.Circuit, prg *share.GenPRG) {
 		zeros[i] = utils.Zero
 	}
 
-	// Compute f(x) and g(x)
+	// Compute f(X) and g(X)
 	pointsF[0] = prg.ShareRand(mod)
 	pointsG[0] = prg.ShareRand(mod)
 
@@ -162,7 +162,7 @@ func sharePolynomials(ckt *circuit.Circuit, prg *share.GenPRG) {
 		pointsG[i] = mulGates[i-1].ParentR.WireValue
 	}
 
-	// Zero pad the upper coefficients of f(x) and g(x)
+	// Zero pad the upper coefficients of f(X) and g(X)
 	for i := n; i < N; i++ {
 		pointsF[i] = utils.Zero
 		pointsG[i] = utils.Zero

@@ -8,6 +8,7 @@ import (
 	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
 	"github.com/henrycg/prio/share"
+	"github.com/lca1/unlynx-smc/lib"
 	"github.com/lca1/unlynx/lib"
 	"github.com/stretchr/testify/assert"
 	"math/big"
@@ -75,42 +76,11 @@ func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, erro
 
 	protocol.Modulus = share.IntModulus
 	protocol.Shares = make([][]*big.Int, 0)
-	protocol.Shares = append(protocol.Shares, Encode(secret1Share[tni.Index()]))
-	protocol.Shares = append(protocol.Shares, Encode(secret2Share[tni.Index()]))
+	//protocol.Shares = append(protocol.Shares, Encode(secret1Share[tni.Index()]))
+	//protocol.Shares = append(protocol.Shares, Encode(secret2Share[tni.Index()]))
+
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], "sum"))
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], "sum"))
 
 	return protocol, err
-}
-
-//Encoding of simple Sum AFE. Depending on the size of the modulus we append bits to the end
-func Encode(x *big.Int) []*big.Int {
-	result := make([]*big.Int, 1)
-	result[0] = x
-	for j := 0; j < x.BitLen(); j++ {
-		result = append(result, big.NewInt(int64(x.Bit(j))))
-	}
-
-	lenR := len(result)
-	// if we use a 63-bit modulus
-	if lenR > 0 && lenR <= 64 {
-		result = appendModulus(63, result)
-		// if we use a 87-bit modulus
-	} else if lenR > 64 && lenR <= 88 {
-		result = appendModulus(87, result)
-		// if we use a 102-bit modulus
-	} else if lenR > 88 && lenR <= 104 {
-		result = appendModulus(103, result)
-		// if we use a 265-bit modulus
-	} else if lenR > 104 && lenR <= 266 {
-		result = appendModulus(265, result)
-	}
-
-	return result
-}
-
-// appendModulus appends the result array with enough bits to fit the chosen x-bit modulus
-func appendModulus(bitModulus int, result []*big.Int) []*big.Int {
-	for len(result) <= bitModulus {
-		result = append(result, big.NewInt(0))
-	}
-	return result
 }

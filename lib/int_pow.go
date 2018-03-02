@@ -50,7 +50,7 @@ func intPowNew(nBits int, pow int, value *big.Int) []*big.Int {
 		log.Fatal("pow must be in {2, 4, 8}")
 	}
 
-	intOuts := intNew(nBits, value)
+	intOuts := IntNew(nBits, value)
 	pows := computePows(pow, value)
 	return append(intOuts, pows...)
 }

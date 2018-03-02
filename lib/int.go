@@ -27,10 +27,11 @@ func intNewRandom(nBits int) []*big.Int {
 	max := big.NewInt(1)
 	max.Lsh(max, uint(nBits))
 	v := utils.RandInt(max)
-	return intNew(nBits, v)
+	return IntNew(nBits, v)
 }
 
-func intNew(nBits int, value *big.Int) []*big.Int {
+//IntNew alows for the encoding of a sum input
+func IntNew(nBits int, value *big.Int) []*big.Int {
 	if nBits < 1 {
 		log.Fatal("nBits must have value >= 1")
 	}
