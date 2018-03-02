@@ -41,3 +41,5 @@ _testmain.go
 .DS_Store
 
 .idea/
+simul/build/
+test_data/
