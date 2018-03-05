@@ -10,6 +10,7 @@ import (
 
 var nbHost = 5
 var nbServers = 5
+var operation = "sum"
 
 func TestServiceUnLynxSMC(t *testing.T) {
 	//log.SetDebugVisible(3)
@@ -33,7 +34,7 @@ func TestServiceUnLynxSMC(t *testing.T) {
 		res, _ := v.SendRequest(el)
 		v.ExecuteRequest(el, res)
 		if i == len(dataPro)-1 {
-			final, _ := dataPro[i].Aggregate(el, res)
+			final, _ := dataPro[i].Aggregate(el, res, operation)
 			log.Lvl1(final)
 		}
 	}

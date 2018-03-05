@@ -204,7 +204,6 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	evalReplies := new(libunlynxsmc.CorShare)
 	//here evalReplies filled by evaluating on a point ( same for all protocols for a single client )
 	evalReplies = check.CorShare(p.Pre)
-
 	//Each proto need to send to each others their share to reconstruct the D & E
 	//log.Lvl1("Broadcasting from", p.Index())
 	//log.Lvl1("Broadcasting share", evalReplies)

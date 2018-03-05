@@ -124,10 +124,10 @@ func (c *API) ExecuteRequest(entities *onet.Roster, id string) error {
 //Aggregate is used to aggregate the datas.
 //For now DPs send request to aggregate even if not wanted, was to simplify simulation. However, servers do not aggregate
 //if there are less than 2 data points.
-func (c *API) Aggregate(entities *onet.Roster, id string) (*big.Int, error) {
+func (c *API) Aggregate(entities *onet.Roster, id string, operation string) (*big.Int, error) {
 
 	result := AggResult{}
-	err := c.SendProtobuf(entities.List[0], &ExecAgg{id}, &result)
+	err := c.SendProtobuf(entities.List[0], &ExecAgg{id, operation}, &result)
 
 	if err != nil {
 		return nil, err

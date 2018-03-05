@@ -23,10 +23,22 @@ func Encode(x *big.Int, operation string) []*big.Int {
 	}
 
 	switch operation {
-	case "sum":
-		result = append(result, IntNew(lenR, x)...)
-	}
+		case "sum":
+			result = append(result, IntNew(lenR, x)...)
+		}
 	// ADD OTHER OPERATIONS HERE
+
+	return result
+}
+
+
+func Decode(output []*big.Int, operation string) *big.Int {
+	result := big.NewInt(int64(0))
+	switch operation {
+		case "sum":
+			result = output[0]
+		}
+		// ADD OTHER OPERATIONS HERE
 
 	return result
 }

@@ -51,6 +51,7 @@ type ExecRequest struct {
 //ExecAgg is the id of the last request before aggregating
 type ExecAgg struct {
 	ID string
+	Operation string
 }
 
 //AggResult is the result of an aggregation in bytes
@@ -172,7 +173,7 @@ func (s *Service) ExecuteAggregation(exe *ExecAgg) (network.Message, error) {
 	}
 	if len(pi.(*protocolsunlynxsmc.AggregationProtocol).Shares) >= 2 {
 		aggRes := <-pi.(*protocolsunlynxsmc.AggregationProtocol).Feedback
-		return &AggResult{aggRes[0].Bytes()}, nil
+		return &AggResult{libunlynxsmc.Decode(aggRes, exe.Operation).Bytes()}, nil
 	}
 
 	log.Lvl2("You cannot aggregate less than 5 data points")

@@ -17,6 +17,7 @@ import (
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its value
 
 var nbS = 5
+var operation = "sum"
 
 //2 random number to test, you can test it with smaller number to see the sum yourself
 var secret1 = big.NewInt(int64(55189642165))
@@ -56,7 +57,7 @@ func TestAggregationProtocol(t *testing.T) {
 	select {
 	case Result := <-protocol.Feedback:
 		log.Lvl1("time elapsed is ", time.Since(start))
-		assert.Equal(t, expectedResults, Result[0])
+		assert.Equal(t, expectedResults, libunlynxsmc.Decode(Result, operation))
 	case <-time.After(timeout):
 		t.Fatal("Didn't finish in time")
 	}
@@ -79,8 +80,8 @@ func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, erro
 	//protocol.Shares = append(protocol.Shares, Encode(secret1Share[tni.Index()]))
 	//protocol.Shares = append(protocol.Shares, Encode(secret2Share[tni.Index()]))
 
-	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], "sum"))
-	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], "sum"))
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], operation))
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], operation))
 
 	return protocol, err
 }
