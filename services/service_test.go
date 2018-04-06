@@ -10,7 +10,10 @@ import (
 
 var nbHost = 5
 var nbServers = 5
-var operation = "sum"
+//var operation = "sum"
+//var operation = "mean"
+//var operation = "variance"
+var operation = "boolean_AND"
 
 func TestServiceUnLynxSMC(t *testing.T) {
 	//log.SetDebugVisible(3)

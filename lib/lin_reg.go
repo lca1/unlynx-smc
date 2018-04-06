@@ -88,3 +88,33 @@ func linRegNew(field *config.Field, values []*big.Int) []*big.Int {
 
 	return out
 }
+
+//JS: Same as linRegNew, but without the field parameter
+//LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
+func linRegNew_updated(values []*big.Int, LinRegBits []int) []*big.Int {
+
+	nTerms := len(LinRegBits)
+	out := make([]*big.Int, 0)
+
+	if len(values) != nTerms {
+		panic("Invalid data input")
+	}
+
+	// Output x_i's in bits
+	for t := 0; t < nTerms; t++ {
+		out = append(out, bigToBits(LinRegBits[t], values[t])...)
+	}
+
+	// Compute  (x_i * x_j) for all (i,j)
+	for i := 0; i < nTerms; i++ {
+		for j := 0; j < nTerms; j++ {
+			if i >= j {
+				v := new(big.Int)
+				v.Mul(values[i], values[j])
+				v.Mod(v, share.IntModulus)
+				out = append(out, v)
+			}
+		}
+	}
+	return out
+}

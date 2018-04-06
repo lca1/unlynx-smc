@@ -4,7 +4,6 @@ import (
 	"github.com/dedis/onet"
 	"testing"
 	"time"
-
 	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
 	"github.com/henrycg/prio/share"
@@ -17,11 +16,16 @@ import (
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its value
 
 var nbS = 5
-var operation = "sum"
+//var operation = "sum"
+//var operation = "mean"
+var operation = "variance"
+//var operation = "boolean_AND"
 
 //2 random number to test, you can test it with smaller number to see the sum yourself
-var secret1 = big.NewInt(int64(55189642165))
+//var secret1 = big.NewInt(int64(55189642165))
+var secret1 = intPowNew(63, 2, big.NewInt(int64(55189642165)))
 var secret2 = big.NewInt(int64(5518495792165))
+
 
 //the share of them
 var secret1Share = share.Share(share.IntModulus, nbS, secret1)
