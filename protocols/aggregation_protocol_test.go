@@ -16,22 +16,25 @@ import (
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its value
 
 var nbS = 5
-//var operation = "sum"
-//var operation = "mean"
-var operation = "variance"
-//var operation = "boolean_AND"
+
+var operation_list = [5]string{"sum", "mean", "variance", "boolean_AND", "boolean_OR"}
+var operation = operation_list[2]
 
 //2 random number to test, you can test it with smaller number to see the sum yourself
-//var secret1 = big.NewInt(int64(55189642165))
-var secret1 = intPowNew(63, 2, big.NewInt(int64(55189642165)))
+var secret1 = big.NewInt(int64(55189642165))
 var secret2 = big.NewInt(int64(5518495792165))
 
+//JS: Smaller test numbers
+/*var secret1 = big.NewInt(int64(4))
+var secret2 = big.NewInt(int64(5))*/
 
 //the share of them
 var secret1Share = share.Share(share.IntModulus, nbS, secret1)
 var secret2Share = share.Share(share.IntModulus, nbS, secret2)
 
 func TestAggregationProtocol(t *testing.T) {
+	//JS: print the chosen operation
+	println("Operation:", operation)
 
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
@@ -46,7 +49,6 @@ func TestAggregationProtocol(t *testing.T) {
 	}
 
 	protocol := p.(*AggregationProtocol)
-
 	start := time.Now()
 	protocol.Start()
 	timeout := network.WaitRetry * time.Duration(network.MaxRetryConnect*5*2) * time.Millisecond
@@ -54,23 +56,42 @@ func TestAggregationProtocol(t *testing.T) {
 	//verify results
 	expectedResults := big.NewInt(int64(0))
 
-	expectedResults.Add(expectedResults, secret1)
-	expectedResults.Add(expectedResults, secret2)
-	expectedResults.Mod(expectedResults, field)
+	switch operation {
+	case "sum", "mean":
+		//Expected results for sum and mean tests
+		expectedResults.Add(expectedResults, secret1)
+		expectedResults.Add(expectedResults, secret2)
+		break
+
+	case "variance":
+		//Expected results for variance test
+		expectedResults.Add(expectedResults, secret1.Mul(secret1, secret1))
+		expectedResults.Add(expectedResults, secret2.Mul(secret2, secret2))
+		expectedResults.Mod(expectedResults, field)
+		break
+
+	case "bool_AND", "bool_OR":
+		break
+	case "min":
+		break
+	case "lin_reg":
+	}
 
 	select {
 	case Result := <-protocol.Feedback:
 		log.Lvl1("time elapsed is ", time.Since(start))
-		assert.Equal(t, expectedResults, libunlynxsmc.Decode(Result, operation))
+
+		//JS: reduce the result modulo the field we are working on
+		var result = libunlynxsmc.Decode(Result, operation).Mod(expectedResults, field)
+
+		assert.Equal(t, expectedResults, result)
 	case <-time.After(timeout):
 		t.Fatal("Didn't finish in time")
 	}
-
 }
 
 //inject Test data
 func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, error) {
-
 	pi, err := NewAggregationProtocol(tni)
 	protocol := pi.(*AggregationProtocol)
 
@@ -81,8 +102,6 @@ func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, erro
 
 	protocol.Modulus = share.IntModulus
 	protocol.Shares = make([][]*big.Int, 0)
-	//protocol.Shares = append(protocol.Shares, Encode(secret1Share[tni.Index()]))
-	//protocol.Shares = append(protocol.Shares, Encode(secret2Share[tni.Index()]))
 
 	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], operation))
 	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], operation))

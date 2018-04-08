@@ -10,12 +10,13 @@ import (
 
 var nbHost = 5
 var nbServers = 5
-//var operation = "sum"
-//var operation = "mean"
-//var operation = "variance"
-var operation = "boolean_AND"
+var operation_list = [5]string{"sum", "mean", "variance", "boolean_AND", "boolean_OR"}
+var operation = operation_list[0]
 
 func TestServiceUnLynxSMC(t *testing.T) {
+	//JS: print the chosen operation
+	println("Operation:", operation)
+
 	//log.SetDebugVisible(3)
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 

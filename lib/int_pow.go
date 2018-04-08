@@ -35,17 +35,16 @@ func computePows(pow int, value *big.Int) []*big.Int {
 
 		src = out[l]
 	}
-
 	return out
 }
 
 func intPowNewRandom(nBits int, pow int) []*big.Int {
 	max := big.NewInt(1)
 	max.Lsh(max, uint(nBits))
-	return intPowNew(nBits, pow, utils.RandInt(max))
+	return IntPowNew(nBits, pow, utils.RandInt(max))
 }
 
-func intPowNew(nBits int, pow int, value *big.Int) []*big.Int {
+func IntPowNew(nBits int, pow int, value *big.Int) []*big.Int {
 	if pow != 2 && pow != 4 && pow != 8 {
 		log.Fatal("pow must be in {2, 4, 8}")
 	}

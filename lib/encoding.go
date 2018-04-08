@@ -2,8 +2,6 @@ package libunlynxsmc
 
 import (
 	"math/big"
-	//"github.com/henrycg/prio/config"
-	//"github.com/henrycg/prio/utils"
 )
 
 //Encode contains the encodings of different operations
@@ -50,14 +48,7 @@ func Encode(x *big.Int, /*input_parameters []*big.Int, */operation string) []*bi
 			break
 
 		case "variance":
-			/*//JS: first include x and its bit representation
-			result = append(result, IntNew(lenR, x) ...)
-			//JS: then include x^2 and its bit representation
-			square := make([]*big.Int, 1)
-			square[0] = new(big.Int).Exp(x, big.NewInt(2), nil)
-			result = append(result, square ...)
-			result = append(result, computePows(2, x) ...)*/
-			result = append(result, intPowNew(lenR, 2, x) ...)
+			result = IntPowNew(lenR, 2, x)
 			break
 
 		case "bool_AND", "bool_OR":
@@ -91,6 +82,11 @@ func Decode(output []*big.Int, operation string) *big.Int {
 		case "sum", "mean":
 			result = output[0]
 			break
+
+		case "variance":
+			result = output[len(output) - 1]
+			break
+
 		case "bool_AND", "bool_OR":
 			result = output[1]
 			break
