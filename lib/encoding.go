@@ -57,7 +57,7 @@ func Encode(x *big.Int, /*input_parameters []*big.Int, */operation string) []*bi
 			square[0] = new(big.Int).Exp(x, big.NewInt(2), nil)
 			result = append(result, square ...)
 			result = append(result, computePows(2, x) ...)*/
-			result = append(result, intPowNew(lenR, 2, x) ...)
+			result = append(result, IntPowNew(lenR, 2, x) ...)
 			break
 
 		case "bool_AND", "bool_OR":

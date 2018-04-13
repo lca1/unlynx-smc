@@ -23,7 +23,7 @@ var operation = "variance"
 
 //2 random number to test, you can test it with smaller number to see the sum yourself
 //var secret1 = big.NewInt(int64(55189642165))
-var secret1 = intPowNew(63, 2, big.NewInt(int64(55189642165)))
+var secret1 = libunlynxsmc.IntPowNew(63, 2, big.NewInt(int64(55189642165)))
 var secret2 = big.NewInt(int64(5518495792165))
 
 
