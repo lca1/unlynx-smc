@@ -20,7 +20,12 @@ var operation_list = [5]string{"sum", "mean", "variance", "bool_AND", "bool_OR"}
 var operation = operation_list[2]
 
 //2 random number to test, you can test it with smaller number to see the sum yourself
+<<<<<<< HEAD
+//var secret1 = big.NewInt(int64(55189642165))
+var secret1 = libunlynxsmc.IntPowNew(63, 2, big.NewInt(int64(55189642165)))
+=======
 var secret1 = big.NewInt(int64(55189642165))
+>>>>>>> caaa67536170bbc32e98f71c2720e7c5e1cbceaf
 var secret2 = big.NewInt(int64(5518495792165))
 /*var secret1 = big.NewInt(int64(3))
 var secret2 = big.NewInt(int64(1))*/

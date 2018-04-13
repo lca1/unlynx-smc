@@ -12,7 +12,7 @@ var nbHost = 5
 var nbServers = 5
 var operation_list = [7]string{"sum", "mean", "variance", "bool_AND", "bool_OR", "min", "lin_reg"}
 var operation = operation_list[5]
-var operationInt = 0
+var operationInt = 4
 
 
 func TestServiceUnLynxSMC(t *testing.T) {

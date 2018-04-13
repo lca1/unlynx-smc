@@ -81,6 +81,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 	//log.Lvl1("When evaluate request mod is ", ckt.Modulus())
 	//can only evaluate on bit values,
 	ckt.Eval(inputs)
+	log.LLvl1(ckt.Outputs())
 	log.Lvl1("value is ", ckt.Outputs()[0].WireValue)
 	// Generate sharings of the input wires and the multiplication gate wires
 	ckt.ShareWires(prg)
@@ -128,7 +129,8 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeBoolAnd:
 			ckts[f] = boolCircuit(field.Name)
 		case config.TypeCountMin:
-			ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
+			//ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
+			ckts[f] = countMinCircuit(field.Name, 8, 32)
 		case config.TypeLinReg:
 			ckts[f] = linRegCircuit(field)
 		}

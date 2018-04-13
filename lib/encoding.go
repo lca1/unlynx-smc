@@ -50,6 +50,14 @@ func Encode(x *big.Int, /*input_parameters []*big.Int, */operation string) []*bi
 			break
 
 		case "variance":
+			/*//JS: first include x and its bit representation
+			result = append(result, IntNew(lenR, x) ...)
+			//JS: then include x^2 and its bit representation
+			square := make([]*big.Int, 1)
+			square[0] = new(big.Int).Exp(x, big.NewInt(2), nil)
+			result = append(result, square ...)
+			result = append(result, computePows(2, x) ...)*/
+
 			result = append(result, IntPowNew(lenR, 2, x) ...)
 			break
 
