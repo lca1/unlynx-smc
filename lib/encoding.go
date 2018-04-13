@@ -8,19 +8,10 @@ import (
 var nbHost = 5
 
 //Encode contains the encodings of different operations
-func Encode(x *big.Int, /*input_parameters []*big.Int, */operation string) []*big.Int {
-	//JS: input_parameters has the value x, the value y (label for linear regression), the global min and the global max
-	//x := input_parameters[0]
-	//y := input_parameters[1]
-	//global_min := input_parameters[2]
-	//global_max := input_parameters[3]
+func Encode(x *big.Int, operation string) []*big.Int {
 
 	//JS: to be seen later, what should be the number of bits of the x and y values?
-	var LinRegBits []int
-	//y value
-	LinRegBits = append(LinRegBits, 64)
-	//x value
-	LinRegBits = append(LinRegBits, 64)
+	var LinRegBits = []int{2, 2}
 
 	//JS: use these default values for now, "countMinBuckets": 32, "countMinHashes": 8
 	nHashes := 8
@@ -119,6 +110,20 @@ func Decode(output []*big.Int, operation string) *big.Int {
 			break
 
 		case "lin_reg":
+			sum_x := output[0].Int64()
+			sum_y := output[1].Int64()
+			sum_x_squared := output[2].Int64()
+			sum_x_y := output[3].Int64()
+			//sum_y_squared := output[4].Int64()
+
+			nbHost_64 := int64(nbHost)
+			//JS: c1 and c0 below are int, but for more precise results, c1 and c0 need to be float
+			c1 := (nbHost_64 * sum_x_y - sum_x*sum_y)/((nbHost_64*sum_x_squared) - sum_x*sum_x)
+			c0 := (sum_y - sum_x*c1)/nbHost_64
+			//c1 := float64(nbHost_64 * sum_x_y - sum_x*sum_y)/float64((nbHost_64*sum_x_squared) - sum_x*sum_x)
+			//c0 := (float64(sum_y) - float64(sum_x)*c1)/float64(nbHost_64)
+			//JS: we need to return both (c0, c1) for linear regression
+			result = big.NewInt(c0)
 			break
 		}
 
