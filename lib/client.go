@@ -37,6 +37,9 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		out[s].RequestID = pub
 	}
 
+	//JS: bool_min = 1 when we are executing the min operation
+	var bool_min = 0
+
 	//log.Lvl1("Inputs are")
 	inputs := make([]*big.Int, 0)
 	for f := 0; f < len(datas); f++ {
@@ -63,6 +66,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 			inputs = append(inputs, boolNewRandom()...)
 		case config.TypeCountMin:
 			log.LLvl1("MIN")
+			bool_min = 1
 			//inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
 			inputs = append(inputs, countMinNewRandom(8, 32)...)
 		case config.TypeLinReg:
@@ -82,7 +86,19 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 	//can only evaluate on bit values,
 	ckt.Eval(inputs)
 	log.LLvl1(ckt.Outputs())
-	log.Lvl1("value is ", ckt.Outputs()[0].WireValue)
+
+	//JS: if we execute the min operation, print the corresponding min value proposed by every DP
+	if (bool_min == 1) {
+		var min_candidate= big.NewInt(0)
+		for i := 0; i < len(ckt.Outputs()); i++ {
+			if (ckt.Outputs()[i].WireValue.Int64() == int64(1)) {
+				min_candidate = big.NewInt(int64(i))
+				break
+			}
+		}
+		log.Lvl1("value is ", min_candidate)
+	} else {log.Lvl1("value is ", ckt.Outputs()[0].WireValue)}
+
 	// Generate sharings of the input wires and the multiplication gate wires
 	ckt.ShareWires(prg)
 

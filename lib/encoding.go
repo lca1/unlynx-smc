@@ -110,10 +110,9 @@ func Decode(output []*big.Int, operation string) *big.Int {
 			break
 
 		case "min":
-			for i := 1; i < len(output); i++ {
-				println("HIIII", output[i], i)
-				if big.NewInt(int64(0)).Cmp(output[i]) == 0 {
-					result = big.NewInt(int64(i-1))
+			for i := 0; i < len(output); i++ {
+				if (output[i].Int64() == int64(1)) {
+						result = big.NewInt(int64(i))
 					break
 				}
 			}
