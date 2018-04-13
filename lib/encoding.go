@@ -103,6 +103,7 @@ func Decode(output []*big.Int, operation string) *big.Int {
 
 		case "min":
 			for i := 1; i < len(output); i++ {
+				println("HIIII", output[i], i)
 				if big.NewInt(int64(0)).Cmp(output[i]) == 0 {
 					result = big.NewInt(int64(i-1))
 					break

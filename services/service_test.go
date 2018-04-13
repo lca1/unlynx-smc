@@ -19,7 +19,6 @@ func TestServiceUnLynxSMC(t *testing.T) {
 	//JS: print the chosen operation
 	println("Operation:", operation)
 
-
 	//JS: Set the appropriate operationInt, depending on operation
 	switch operation {
 	case "variance":
