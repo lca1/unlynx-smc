@@ -151,6 +151,7 @@ func (p *AggregationProtocol) ascendingAggregationPhase() []*big.Int {
 
 				index := int(v.Index)
 
+				//JS: Collective sum, including child values
 				p.Sum[index].Add(p.Sum[index], &sum)
 				p.Sum[index].Mod(p.Sum[index], p.Modulus)
 			}
@@ -158,6 +159,7 @@ func (p *AggregationProtocol) ascendingAggregationPhase() []*big.Int {
 	}
 
 	//do the sum of ciphers
+	//JS: Local sum from different DPS
 	for i := 0; i < len(p.Shares); i++ {
 		for j := 0; j < len(p.Sum); j++ {
 			p.Sum[j].Add(p.Sum[j], p.Shares[i][j])

@@ -34,12 +34,13 @@ type ConfigByte struct {
 }
 
 //NewUnLynxSMCClient constructor of a DataProvider
-func NewUnLynxSMCClient(clientID string) *API {
+//operation indicates which circuit to build (int, intpow, intunsafe, or, ...)
+func NewUnLynxSMCClient(clientID string, operation int) *API {
 
 	newClient := &API{
 		Client:      onet.NewClient(libunlynx.SuiTe, ServiceName),
 		ClientID:    clientID,
-		secretValue: []*config.Field{&config.Field{Name: "Simul", Type: config.FieldType(byte(0)), IntBits: 2}},
+		secretValue: []*config.Field{&config.Field{Name: "Simul", Type: config.FieldType(byte(operation)), IntBits: 2}},
 		modulus:     share.IntModulus,
 	}
 	return newClient

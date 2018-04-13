@@ -45,18 +45,28 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		default:
 			panic("Unexpected type!")
 		case config.TypeInt:
+			log.LLvl1("INT")
 			inputs = append(inputs, intNewRandom(int(field.IntBits))...)
 		case config.TypeIntPow:
-			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
+			log.LLvl1("POW")
+			log.LLvl1(int(field.IntPow))
+			//inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
+			inputs = append(inputs, intPowNewRandom(int(field.IntBits), 2)...)
 		case config.TypeIntUnsafe:
+			log.LLvl1("UNSAFE")
 			inputs = append(inputs, intUnsafeNewRandom(int(field.IntBits))...)
 		case config.TypeBoolOr:
+			log.LLvl1("OR")
 			inputs = append(inputs, boolNewRandom()...)
 		case config.TypeBoolAnd:
+			log.LLvl1("AND")
 			inputs = append(inputs, boolNewRandom()...)
 		case config.TypeCountMin:
-			inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
+			log.LLvl1("MIN")
+			//inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
+			inputs = append(inputs, countMinNewRandom(8, 32)...)
 		case config.TypeLinReg:
+			log.LLvl1("LIN_REG")
 			inputs = append(inputs, linRegNewRandom(field)...)
 		}
 		/*
@@ -71,6 +81,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 	//log.Lvl1("When evaluate request mod is ", ckt.Modulus())
 	//can only evaluate on bit values,
 	ckt.Eval(inputs)
+	log.LLvl1(ckt.Outputs())
 	log.Lvl1("value is ", ckt.Outputs()[0].WireValue)
 	// Generate sharings of the input wires and the multiplication gate wires
 	ckt.ShareWires(prg)
@@ -109,7 +120,8 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeInt:
 			ckts[f] = intCircuit(field.Name, int(field.IntBits))
 		case config.TypeIntPow:
-			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
+			//ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
+			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), 2)
 		case config.TypeIntUnsafe:
 			ckts[f] = intUnsafeCircuit(field.Name)
 		case config.TypeBoolOr:
@@ -117,7 +129,8 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeBoolAnd:
 			ckts[f] = boolCircuit(field.Name)
 		case config.TypeCountMin:
-			ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
+			//ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
+			ckts[f] = countMinCircuit(field.Name, 8, 32)
 		case config.TypeLinReg:
 			ckts[f] = linRegCircuit(field)
 		}

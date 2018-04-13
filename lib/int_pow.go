@@ -35,7 +35,6 @@ func computePows(pow int, value *big.Int) []*big.Int {
 
 		src = out[l]
 	}
-
 	return out
 }
 
