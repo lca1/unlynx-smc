@@ -10,12 +10,34 @@ import (
 
 var nbHost = 5
 var nbServers = 5
-var operation_list = [5]string{"sum", "mean", "variance", "boolean_AND", "boolean_OR"}
-var operation = operation_list[0]
+var operation_list = [7]string{"sum", "mean", "variance", "bool_AND", "bool_OR", "min", "lin_reg"}
+var operation = operation_list[5]
+var operationInt = 0
+
 
 func TestServiceUnLynxSMC(t *testing.T) {
 	//JS: print the chosen operation
 	println("Operation:", operation)
+
+
+	//JS: Set the appropriate operationInt, depending on operation
+	switch operation {
+	case "variance":
+		operationInt = 1
+		break
+	case "bool_OR":
+		operationInt = 2
+		break
+	case "bool_AND":
+		operationInt = 3
+		break
+	case "min":
+		operationInt = 4
+		break
+	case "lin_reg":
+		operationInt = 5
+		break
+	}
 
 	//log.SetDebugVisible(3)
 	local := onet.NewLocalTest(libunlynx.SuiTe)
@@ -29,7 +51,7 @@ func TestServiceUnLynxSMC(t *testing.T) {
 
 	//init
 	for i, _ := range dataPro {
-		dataPro[i] = servicesunlynxsmc.NewUnLynxSMCClient("DP" + string(i))
+		dataPro[i] = servicesunlynxsmc.NewUnLynxSMCClient("DP" + string(i), operationInt)
 	}
 
 	//log.Lvl1("Secret value is ", (client.secretValue[0].IntBits) ,"bits")
