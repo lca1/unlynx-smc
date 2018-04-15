@@ -16,23 +16,15 @@ import (
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its valu
 var nbS = 5
 
-var operation_list = [5]string{"sum", "mean", "variance", "bool_AND", "bool_OR"}
-var operation = operation_list[0]
-
 //2 random number to test, you can test it with smaller number to see the sum yourself
 var secret1 = big.NewInt(int64(55189642165))
 var secret2 = big.NewInt(int64(5518495792165))
-/*var secret1 = big.NewInt(int64(3))
-var secret2 = big.NewInt(int64(1))*/
 
 //the share of them
 var secret1Share = share.Share(share.IntModulus, nbS, secret1)
 var secret2Share = share.Share(share.IntModulus, nbS, secret2)
 
 func TestAggregationProtocol(t *testing.T) {
-	//JS: print the chosen operation
-	println("Operation:", operation)
-
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
@@ -61,7 +53,7 @@ func TestAggregationProtocol(t *testing.T) {
 	case Result := <-protocol.Feedback:
 		log.Lvl1("time elapsed is ", time.Since(start))
 		//JS: get the result and reduce it modulo the field we are working on
-		result := libunlynxsmc.Decode(Result, operation)
+		result := libunlynxsmc.Decode(Result, "sum")
 		result.Mod(result, field)
 		println("RESULT", result.Int64())
 		assert.Equal(t, expectedResults, result)

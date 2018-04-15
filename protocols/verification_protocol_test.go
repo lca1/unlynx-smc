@@ -5,7 +5,6 @@ import (
 	"github.com/dedis/onet/log"
 	"testing"
 	"time"
-
 	"github.com/henrycg/prio/config"
 	"github.com/henrycg/prio/share"
 	"github.com/henrycg/prio/utils"
@@ -25,14 +24,43 @@ var nbServ = 2
 
 //the share of them
 //var serv1Share = prio_utils.Share(field,nbServ,serv1Secret)
-
 //var req = prio_utils.ClientRequest(serv1Share, 0)
 //var datas = []*config.Field{&config.Field{Name:"test",Type:config.FieldType(byte(5)),LinRegBits:[]int{14,7,1,2,7,8,1,3,8,1,8,4,4,1}},&config.Field{Name:"Test2",Type:config.FieldType(byte(5)),LinRegBits:[]int{1,2,5,2,7,3,8,1,8,1,8,3,6,12}}}
+
+//JS
+var operation_list = [8]string{"sum", "mean", "variance", "bool_AND", "bool_OR", "min", "lin_reg", "unsafe"}
+var operation = operation_list[0]
+var operationInt = 0
+
 var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: 2}}
 var req = libunlynxsmc.ClientRequest(datas, nbServ, 0)
+
 var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestVerificationProtocol(t *testing.T) {
+	switch operation {
+	case "variance":
+		operationInt = 1
+		break
+	case "bool_OR":
+		operationInt = 2
+		break
+	case "bool_AND":
+		operationInt = 3
+		break
+	case "min":
+		operationInt = 4
+		break
+	case "lin_reg":
+		operationInt = 5
+		break
+	case "unsafe":
+		operationInt = 6
+		break
+	}
+
+	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(operationInt)), IntBits: 2}}
+	req = libunlynxsmc.ClientRequest(datas, nbServ, 0)
 
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
