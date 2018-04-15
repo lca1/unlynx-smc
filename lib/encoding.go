@@ -41,14 +41,6 @@ func Encode(x *big.Int, operation string) []*big.Int {
 			break
 
 		case "variance":
-			/*//JS: first include x and its bit representation
-			result = append(result, IntNew(lenR, x) ...)
-			//JS: then include x^2 and its bit representation
-			square := make([]*big.Int, 1)
-			square[0] = new(big.Int).Exp(x, big.NewInt(2), nil)
-			result = append(result, square ...)
-			result = append(result, computePows(2, x) ...)*/
-
 			result = append(result, IntPowNew(lenR, 2, x) ...)
 			break
 
@@ -116,13 +108,14 @@ func Decode(output []*big.Int, operation string) *big.Int {
 			sum_x_y := output[3].Int64()
 			//sum_y_squared := output[4].Int64()
 
-			nbHost_64 := int64(nbHost)
+			//JS: we need to return both (c0, c1) for linear regression
+			//but since result is not an array, for now we should return one of them
 			//JS: c1 and c0 below are int, but for more precise results, c1 and c0 need to be float
+			nbHost_64 := int64(nbHost)
 			c1 := (nbHost_64 * sum_x_y - sum_x*sum_y)/((nbHost_64*sum_x_squared) - sum_x*sum_x)
 			c0 := (sum_y - sum_x*c1)/nbHost_64
 			//c1 := float64(nbHost_64 * sum_x_y - sum_x*sum_y)/float64((nbHost_64*sum_x_squared) - sum_x*sum_x)
 			//c0 := (float64(sum_y) - float64(sum_x)*c1)/float64(nbHost_64)
-			//JS: we need to return both (c0, c1) for linear regression
 			result = big.NewInt(c0)
 			break
 		}

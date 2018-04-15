@@ -16,6 +16,7 @@ import (
 //JS: to be seen later, what should be the number of bits of the x and y values?
 var LinRegBits_temp = [2]int{2, 2}
 
+//LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
 func linRegCircuit(field *config.Field) *circuit.Circuit {
 
 	//JS
@@ -106,7 +107,6 @@ func linRegNew(field *config.Field, values []*big.Int) []*big.Int {
 }
 
 //JS: Same as linRegNew, but without the field parameter
-//LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
 func linRegNew_updated(values []*big.Int, LinRegBits []int) []*big.Int {
 
 	nTerms := len(LinRegBits)
