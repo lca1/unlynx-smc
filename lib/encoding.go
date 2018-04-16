@@ -71,7 +71,7 @@ func Decode(output []*big.Int, operation string) *big.Int {
 
 		case "bool_AND":
 			res :=  output[0].Int64()
-			if res == int64(nbHost) {result = big.NewInt(1)
+			if res == int64(NbHost) {result = big.NewInt(1)
 			} else {result = big.NewInt(0)}
 			break
 
@@ -100,7 +100,7 @@ func Decode(output []*big.Int, operation string) *big.Int {
 			//JS: we need to return both (c0, c1) for linear regression
 			//but since result is not an array, for now we should return one of them
 			//JS: c1 and c0 below are int, but for more precise results, c1 and c0 need to be float
-			nbHost_64 := int64(nbHost)
+			nbHost_64 := int64(NbHost)
 			c1 := (nbHost_64 * sum_x_y - sum_x*sum_y)/((nbHost_64*sum_x_squared) - sum_x*sum_x)
 			c0 := (sum_y - sum_x*c1)/nbHost_64
 			//c1 := float64(nbHost_64 * sum_x_y - sum_x*sum_y)/float64((nbHost_64*sum_x_squared) - sum_x*sum_x)
