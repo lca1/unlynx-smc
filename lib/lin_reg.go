@@ -13,9 +13,6 @@ import (
 //File originally in Prio repository.
 //Copied here to show what can be done with each type.
 
-//JS: to be seen later, what should be the number of bits of the x and y values?
-var LinRegBits_temp = [2]int{2, 2}
-
 //LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
 func linRegCircuit(field *config.Field) *circuit.Circuit {
 
