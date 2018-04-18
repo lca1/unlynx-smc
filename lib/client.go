@@ -8,7 +8,6 @@ import (
 	"github.com/henrycg/prio/triple"
 	"github.com/henrycg/prio/utils"
 	"math/big"
-
 	"github.com/henrycg/prio/config"
 	"math/rand"
 )
@@ -55,8 +54,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		case config.TypeIntPow:
 			log.LLvl1("POW")
 			log.LLvl1(int(field.IntPow))
-			//inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
-			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int_power)...)
+			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
 		case config.TypeIntUnsafe:
 			log.LLvl1("UNSAFE")
 			inputs = append(inputs, intUnsafeNewRandom(int(field.IntBits))...)
@@ -69,8 +67,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		case config.TypeCountMin:
 			log.LLvl1("MIN")
 			bool_min = 1
-			//inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
-			inputs = append(inputs, countMinNewRandom(nHashes, nBuckets)...)
+			inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
 		case config.TypeLinReg:
 			log.LLvl1("LIN_REG")
 			inputs = append(inputs, linRegNewRandom(field)...)
@@ -143,8 +140,7 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeInt:
 			ckts[f] = intCircuit(field.Name, int(field.IntBits))
 		case config.TypeIntPow:
-			//ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
-			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int_power)
+			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
 		case config.TypeIntUnsafe:
 			ckts[f] = intUnsafeCircuit(field.Name)
 		case config.TypeBoolOr:
@@ -152,8 +148,7 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeBoolAnd:
 			ckts[f] = boolCircuit(field.Name)
 		case config.TypeCountMin:
-			//ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
-			ckts[f] = countMinCircuit(field.Name, nHashes, nBuckets)
+			ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
 		case config.TypeLinReg:
 			ckts[f] = linRegCircuit(field)
 		}

@@ -40,8 +40,10 @@ func NewUnLynxSMCClient(clientID string, operation int) *API {
 	newClient := &API{
 		Client:      onet.NewClient(libunlynx.SuiTe, ServiceName),
 		ClientID:    clientID,
-		secretValue: []*config.Field{&config.Field{Name: "Simul", Type: config.FieldType(byte(operation)), IntBits: 2}},
-		modulus:     share.IntModulus,
+		//JS: set the field attributes here
+		secretValue: []*config.Field{&config.Field{Name: "Simul", Type: config.FieldType(byte(operation)), IntBits: libunlynxsmc.IntBits,
+		IntPow:libunlynxsmc.Int_power, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}},
+modulus:     share.IntModulus,
 	}
 	return newClient
 }

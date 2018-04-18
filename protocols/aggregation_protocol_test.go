@@ -11,7 +11,6 @@ import (
 	"github.com/lca1/unlynx/lib"
 	"github.com/stretchr/testify/assert"
 	"math/big"
-	lib "github.com/lca1/unlynx-smc/lib"
 )
 
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its valu
@@ -21,15 +20,15 @@ var secret1 = big.NewInt(int64(55189642165))
 var secret2 = big.NewInt(int64(5518495792165))
 
 //the share of them
-var secret1Share = share.Share(share.IntModulus, lib.NbServers, secret1)
-var secret2Share = share.Share(share.IntModulus, lib.NbServers, secret2)
+var secret1Share = share.Share(share.IntModulus, libunlynxsmc.NbServers, secret1)
+var secret2Share = share.Share(share.IntModulus, libunlynxsmc.NbServers, secret2)
 
 func TestAggregationProtocol(t *testing.T) {
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("AggregationTest", NewAggregationTest)
-	_, _, tree := local.GenTree(lib.NbServers, true)
+	_, _, tree := local.GenTree(libunlynxsmc.NbServers, true)
 	defer local.CloseAll()
 
 	p, err := local.CreateProtocol("AggregationTest", tree)

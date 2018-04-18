@@ -30,7 +30,7 @@ func Encode(x *big.Int, operation string) []*big.Int {
 			break
 
 		case "variance":
-			result = append(result, IntPowNew(lenR, int_power, x) ...)
+			result = append(result, IntPowNew(lenR, Int_power, x) ...)
 			break
 
 		case "bool_AND", "bool_OR":
@@ -41,17 +41,17 @@ func Encode(x *big.Int, operation string) []*big.Int {
 			break
 
 		case "min":
-			total := nHashes * nBuckets
+			total := NHashes * NBuckets
 			values := make([]bool, total)
 			//JS: set values[i] to true for i >= x and to false otherwise
 			for i := 0; i < total; i++ {
 				if int64(i) >= x.Int64() {values[i] = true} else {values[i] = false}
 			}
-			result = append(result, countMinNew(nHashes, nBuckets, values)...)
+			result = append(result, countMinNew(NHashes, NBuckets, values)...)
 			break
 
 		case "lin_reg":
-			result = append(result, linRegNew_updated(result, LinRegBits_temp) ...)
+			result = append(result, linRegNew_updated(result, LinRegBits) ...)
 			break
 		}
 

@@ -11,7 +11,6 @@ import (
 	"github.com/lca1/unlynx-smc/lib"
 	"github.com/lca1/unlynx/lib"
 	"github.com/stretchr/testify/assert"
-	lib "github.com/lca1/unlynx-smc/lib"
 )
 
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its value
@@ -26,41 +25,45 @@ var field = share.IntModulus
 //var req = prio_utils.ClientRequest(serv1Share, 0)
 //var datas = []*config.Field{&config.Field{Name:"test",Type:config.FieldType(byte(5)),LinRegBits:[]int{14,7,1,2,7,8,1,3,8,1,8,4,4,1}},&config.Field{Name:"Test2",Type:config.FieldType(byte(5)),LinRegBits:[]int{1,2,5,2,7,3,8,1,8,1,8,3,6,12}}}
 
-var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: 2}}
-var req = libunlynxsmc.ClientRequest(datas, lib.NbServers, 0)
+var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: libunlynxsmc.IntBits}}
+var req = libunlynxsmc.ClientRequest(datas, libunlynxsmc.NbServers, 0)
 
 var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestVerificationProtocol(t *testing.T) {
-	switch lib.Operation {
+	switch libunlynxsmc.Operation {
+	case "sum", "mean":
+		libunlynxsmc.OperationInt = 0
+		break
 	case "variance":
-		lib.OperationInt = 1
+		libunlynxsmc.OperationInt = 1
 		break
 	case "bool_OR":
-		lib.OperationInt = 2
+		libunlynxsmc.OperationInt = 2
 		break
 	case "bool_AND":
-		lib.OperationInt = 3
+		libunlynxsmc.OperationInt = 3
 		break
 	case "min":
-		lib.OperationInt = 4
+		libunlynxsmc.OperationInt = 4
 		break
 	case "lin_reg":
-		lib.OperationInt = 5
+		libunlynxsmc.OperationInt = 5
 		break
 	case "unsafe":
-		lib.OperationInt = 6
+		libunlynxsmc.OperationInt = 6
 		break
 	}
 
-	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(lib.OperationInt)), IntBits: 2}}
-	req = libunlynxsmc.ClientRequest(datas, lib.NbServers, 0)
+	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(libunlynxsmc.OperationInt)), IntBits: libunlynxsmc.IntBits,
+	IntPow: libunlynxsmc.Int_power, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}}
+	req = libunlynxsmc.ClientRequest(datas, libunlynxsmc.NbServers, 0)
 
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("VerificationTest", NewVerificationTest)
-	_, _, tree := local.GenTree(lib.NbServers, true)
+	_, _, tree := local.GenTree(libunlynxsmc.NbServers, true)
 	defer local.CloseAll()
 
 	p, err := local.CreateProtocol("VerificationTest", tree)
