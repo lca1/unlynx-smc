@@ -13,23 +13,15 @@ import (
 //File originally in Prio repository.
 //Copied here to show what can be done with each type.
 
-//JS: to be seen later, what should be the number of bits of the x and y values?
-var LinRegBits_temp = [2]int{2, 2}
-
 //LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
 func linRegCircuit(field *config.Field) *circuit.Circuit {
-
-	//JS
-	//nTerms := len(field.LinRegBits)
-	nTerms := len(LinRegBits_temp)
+	nTerms := len(field.LinRegBits)
 
 	// Check x_i's
 	xCkts := make([]*circuit.Circuit, nTerms)
 	for t := 0; t < nTerms; t++ {
 		name := fmt.Sprintf("%v-bits[%v]", field.Name, t)
-		//JS
-		//xCkts[t] = circuit.NBits(field.LinRegBits[t], name)
-		xCkts[t] = circuit.NBits(LinRegBits_temp[t], name)
+		xCkts[t] = circuit.NBits(field.LinRegBits[t], name)
 	}
 
 	// Check x_i * x_j
@@ -58,16 +50,12 @@ func linRegCircuit(field *config.Field) *circuit.Circuit {
 }
 
 func linRegNewRandom(field *config.Field) []*big.Int {
-	//JS
-	//nTerms := len(field.LinRegBits)
-	nTerms := len(LinRegBits_temp)
+	nTerms := len(field.LinRegBits)
 	max := new(big.Int)
 	values := make([]*big.Int, nTerms)
 	for t := 0; t < nTerms; t++ {
 		max.SetUint64(1)
-		//JS
-		//max.Lsh(max, uint(field.LinRegBits[t]))
-		max.Lsh(max, uint(LinRegBits_temp[t]))
+		max.Lsh(max, uint(field.LinRegBits[t]))
 		values[t] = utils.RandInt(max)
 	}
 
@@ -75,9 +63,7 @@ func linRegNewRandom(field *config.Field) []*big.Int {
 }
 
 func linRegNew(field *config.Field, values []*big.Int) []*big.Int {
-	//JS
-	//nTerms := len(field.LinRegBits)
-	nTerms := len(LinRegBits_temp)
+	nTerms := len(field.LinRegBits)
 	out := make([]*big.Int, 0)
 
 	if len(values) != nTerms {
@@ -86,9 +72,7 @@ func linRegNew(field *config.Field, values []*big.Int) []*big.Int {
 
 	// Output x_i's in bits
 	for t := 0; t < nTerms; t++ {
-		//JS
-		//out = append(out, bigToBits(field.LinRegBits[t], values[t])...)
-		out = append(out, bigToBits(LinRegBits_temp[t], values[t])...)
+		out = append(out, bigToBits(field.LinRegBits[t], values[t])...)
 	}
 
 	// Compute  (x_i * x_j) for all (i,j)

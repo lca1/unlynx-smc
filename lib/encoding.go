@@ -4,19 +4,8 @@ import (
 	"math/big"
 )
 
-//JS: This is needed for the decoding function of the boolean_AND operation (same value as in service_test.go)
-var nbHost = 5
-
 //Encode contains the encodings of different operations
 func Encode(x *big.Int, operation string) []*big.Int {
-
-	//JS: to be seen later, what should be the number of bits of the x and y values?
-	var LinRegBits = []int{2, 2}
-
-	//JS: use these default values for now, "countMinBuckets": 32, "countMinHashes": 8
-	nHashes := 8
-	nBuckets := 32
-
 	result := make([]*big.Int, 1)
 	result[0] = x
 
@@ -41,24 +30,24 @@ func Encode(x *big.Int, operation string) []*big.Int {
 			break
 
 		case "variance":
-			result = append(result, IntPowNew(lenR, 2, x) ...)
+			result = append(result, IntPowNew(lenR, Int_power, x) ...)
 			break
 
 		case "bool_AND", "bool_OR":
 			//JS: Should this be done this way? (lamda zeros in prio!)
-			if (x == big.NewInt(1)) {
+			if x == big.NewInt(1) {
 				result = append(result, boolNew(true) ...)
 			} else {result = append(result, boolNew(false) ...)}
 			break
 
 		case "min":
-			total := nHashes * nBuckets
+			total := NHashes * NBuckets
 			values := make([]bool, total)
-			//JS: set values[i] to true for i <= x and to false otherwise (as in the prio design)
+			//JS: set values[i] to true for i >= x and to false otherwise
 			for i := 0; i < total; i++ {
-				if big.NewInt(int64(i)).Cmp(x) < 1 {values[i] = true} else {values[i] = false}
+				if int64(i) >= x.Int64() {values[i] = true} else {values[i] = false}
 			}
-			result = append(result, countMinNew(nHashes, nBuckets, values)...)
+			result = append(result, countMinNew(NHashes, NBuckets, values)...)
 			break
 
 		case "lin_reg":
@@ -82,19 +71,19 @@ func Decode(output []*big.Int, operation string) *big.Int {
 
 		case "bool_AND":
 			res :=  output[0].Int64()
-			if (res == int64(nbHost)) {result = big.NewInt(1)
+			if res == int64(NbHost) {result = big.NewInt(1)
 			} else {result = big.NewInt(0)}
 			break
 
 		case "bool_OR":
 			res :=  output[0].Int64()
-			if (res == int64(0)) {result = big.NewInt(0)
+			if res == int64(0) {result = big.NewInt(0)
 			} else {result = big.NewInt(1)}
 			break
 
 		case "min":
 			for i := 0; i < len(output); i++ {
-				if (output[i].Int64() == int64(1)) {
+				if output[i].Int64() == int64(1) {
 						result = big.NewInt(int64(i))
 					break
 				}
@@ -111,7 +100,7 @@ func Decode(output []*big.Int, operation string) *big.Int {
 			//JS: we need to return both (c0, c1) for linear regression
 			//but since result is not an array, for now we should return one of them
 			//JS: c1 and c0 below are int, but for more precise results, c1 and c0 need to be float
-			nbHost_64 := int64(nbHost)
+			nbHost_64 := int64(NbHost)
 			c1 := (nbHost_64 * sum_x_y - sum_x*sum_y)/((nbHost_64*sum_x_squared) - sum_x*sum_x)
 			c0 := (sum_y - sum_x*c1)/nbHost_64
 			//c1 := float64(nbHost_64 * sum_x_y - sum_x*sum_y)/float64((nbHost_64*sum_x_squared) - sum_x*sum_x)

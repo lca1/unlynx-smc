@@ -17,8 +17,6 @@ import (
 
 var field = share.IntModulus
 
-var nbServ = 2
-
 //3 random number to test
 //var serv1Secret = big.NewInt(int64(55))
 
@@ -27,46 +25,45 @@ var nbServ = 2
 //var req = prio_utils.ClientRequest(serv1Share, 0)
 //var datas = []*config.Field{&config.Field{Name:"test",Type:config.FieldType(byte(5)),LinRegBits:[]int{14,7,1,2,7,8,1,3,8,1,8,4,4,1}},&config.Field{Name:"Test2",Type:config.FieldType(byte(5)),LinRegBits:[]int{1,2,5,2,7,3,8,1,8,1,8,3,6,12}}}
 
-//JS
-var operation_list = [8]string{"sum", "mean", "variance", "bool_AND", "bool_OR", "min", "lin_reg", "unsafe"}
-var operation = operation_list[0]
-var operationInt = 0
-
-var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: 2}}
-var req = libunlynxsmc.ClientRequest(datas, nbServ, 0)
+var datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(0)), IntBits: libunlynxsmc.IntBits}}
+var req = libunlynxsmc.ClientRequest(datas, libunlynxsmc.NbServers, 0)
 
 var randomPoint = utils.RandInt(share.IntModulus)
 
 func TestVerificationProtocol(t *testing.T) {
-	switch operation {
+	switch libunlynxsmc.Operation {
+	case "sum", "mean":
+		libunlynxsmc.OperationInt = 0
+		break
 	case "variance":
-		operationInt = 1
+		libunlynxsmc.OperationInt = 1
 		break
 	case "bool_OR":
-		operationInt = 2
+		libunlynxsmc.OperationInt = 2
 		break
 	case "bool_AND":
-		operationInt = 3
+		libunlynxsmc.OperationInt = 3
 		break
 	case "min":
-		operationInt = 4
+		libunlynxsmc.OperationInt = 4
 		break
 	case "lin_reg":
-		operationInt = 5
+		libunlynxsmc.OperationInt = 5
 		break
 	case "unsafe":
-		operationInt = 6
+		libunlynxsmc.OperationInt = 6
 		break
 	}
 
-	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(operationInt)), IntBits: 2}}
-	req = libunlynxsmc.ClientRequest(datas, nbServ, 0)
+	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(libunlynxsmc.OperationInt)), IntBits: libunlynxsmc.IntBits,
+	IntPow: libunlynxsmc.Int_power, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}}
+	req = libunlynxsmc.ClientRequest(datas, libunlynxsmc.NbServers, 0)
 
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("VerificationTest", NewVerificationTest)
-	_, _, tree := local.GenTree(nbServ, true)
+	_, _, tree := local.GenTree(libunlynxsmc.NbServers, true)
 	defer local.CloseAll()
 
 	p, err := local.CreateProtocol("VerificationTest", tree)

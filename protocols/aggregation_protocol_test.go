@@ -14,22 +14,21 @@ import (
 )
 
 // the field cardinality must be superior to nbclient*2^b where b is the maximum number of bit a client need to encode its valu
-var nbS = 5
 
-//2 random number to test, you can test it with smaller number to see the sum yourself
+//2 random numbers to test, you can test it with smaller number to see the sum yourself
 var secret1 = big.NewInt(int64(55189642165))
 var secret2 = big.NewInt(int64(5518495792165))
 
 //the share of them
-var secret1Share = share.Share(share.IntModulus, nbS, secret1)
-var secret2Share = share.Share(share.IntModulus, nbS, secret2)
+var secret1Share = share.Share(share.IntModulus, libunlynxsmc.NbServers, secret1)
+var secret2Share = share.Share(share.IntModulus, libunlynxsmc.NbServers, secret2)
 
 func TestAggregationProtocol(t *testing.T) {
 	local := onet.NewLocalTest(libunlynx.SuiTe)
 
 	// You must register this protocol before creating the servers
 	onet.GlobalProtocolRegister("AggregationTest", NewAggregationTest)
-	_, _, tree := local.GenTree(nbS, true)
+	_, _, tree := local.GenTree(libunlynxsmc.NbServers, true)
 	defer local.CloseAll()
 
 	p, err := local.CreateProtocol("AggregationTest", tree)
@@ -73,7 +72,7 @@ func NewAggregationTest(tni *onet.TreeNodeInstance) (onet.ProtocolInstance, erro
 	//You use AFE encoding to encode the shares.
 	protocol.Modulus = share.IntModulus
 	protocol.Shares = make([][]*big.Int, 0)
-	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], operation))
-	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], operation))
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret1Share[tni.Index()], "sum"))
+	protocol.Shares = append(protocol.Shares, libunlynxsmc.Encode(secret2Share[tni.Index()], "sum"))
 	return protocol, err
 }

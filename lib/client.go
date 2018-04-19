@@ -8,7 +8,6 @@ import (
 	"github.com/henrycg/prio/triple"
 	"github.com/henrycg/prio/utils"
 	"math/big"
-
 	"github.com/henrycg/prio/config"
 	"math/rand"
 )
@@ -21,6 +20,11 @@ type Request struct {
 	Hint        *share.PRGHints
 	TripleShare *triple.Share
 }
+
+//JS: bool_min = 1 when we are executing the min operation
+var bool_min = 0
+//JS: bool_linreg = 1 when we are executing the linear regression operation
+var bool_linreg = 0
 
 //ClientRequest creates proof submission for one client
 func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
@@ -37,12 +41,6 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		out[s].RequestID = pub
 	}
 
-	//JS: bool_min = 1 when we are executing the min operation
-	var bool_min = 0
-
-	//JS: bool_linreg = 1 when we are executing the linear regression operation
-	var bool_linreg = 0
-
 	//log.Lvl1("Inputs are")
 	inputs := make([]*big.Int, 0)
 	for f := 0; f < len(datas); f++ {
@@ -56,8 +54,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		case config.TypeIntPow:
 			log.LLvl1("POW")
 			log.LLvl1(int(field.IntPow))
-			//inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
-			inputs = append(inputs, intPowNewRandom(int(field.IntBits), 2)...)
+			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
 		case config.TypeIntUnsafe:
 			log.LLvl1("UNSAFE")
 			inputs = append(inputs, intUnsafeNewRandom(int(field.IntBits))...)
@@ -70,8 +67,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		case config.TypeCountMin:
 			log.LLvl1("MIN")
 			bool_min = 1
-			//inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
-			inputs = append(inputs, countMinNewRandom(8, 32)...)
+			inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
 		case config.TypeLinReg:
 			log.LLvl1("LIN_REG")
 			inputs = append(inputs, linRegNewRandom(field)...)
@@ -101,7 +97,9 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 			}
 		}
 		log.Lvl1("value is ", min_candidate)
-	} else if (bool_linreg == 1){log.Lvl1("X value is ", ckt.Outputs()[0].WireValue)
+	} else if (bool_linreg == 1){
+		//JS: if we execute the lin_reg operation, print the corresponding X and Y values proposed by every DP
+		log.Lvl1("X value is ", ckt.Outputs()[0].WireValue)
 		log.Lvl1("Y value is ", ckt.Outputs()[1].WireValue)
 	} else {log.Lvl1("value is ", ckt.Outputs()[0].WireValue)}
 
@@ -142,8 +140,7 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeInt:
 			ckts[f] = intCircuit(field.Name, int(field.IntBits))
 		case config.TypeIntPow:
-			//ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
-			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), 2)
+			ckts[f] = intPowCircuit(field.Name, int(field.IntBits), int(field.IntPow))
 		case config.TypeIntUnsafe:
 			ckts[f] = intUnsafeCircuit(field.Name)
 		case config.TypeBoolOr:
@@ -151,8 +148,7 @@ func ConfigToCircuit(datas []*config.Field) *circuit.Circuit {
 		case config.TypeBoolAnd:
 			ckts[f] = boolCircuit(field.Name)
 		case config.TypeCountMin:
-			//ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
-			ckts[f] = countMinCircuit(field.Name, 8, 32)
+			ckts[f] = countMinCircuit(field.Name, int(field.CountMinHashes), int(field.CountMinBuckets))
 		case config.TypeLinReg:
 			ckts[f] = linRegCircuit(field)
 		}
