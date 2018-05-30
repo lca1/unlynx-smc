@@ -87,7 +87,6 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 		log.Lvl1("res is ", result)
 		log.Lvl1(sumCipher)
 		//time := time.Since(start)
-		libunlynx.EndTimer(roundTime)
 		time := time.Since(start)
 		libunlynx.EndTimer(roundTime)
 
