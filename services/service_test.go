@@ -33,6 +33,9 @@ func TestServiceUnLynxSMC(t *testing.T) {
 	case "lin_reg":
 		libunlynxsmc.OperationInt = 5
 		break
+	case "unsafe":
+		libunlynxsmc.OperationInt = 6
+		break
 	}
 
 	//log.SetDebugVisible(3)

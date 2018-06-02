@@ -56,7 +56,7 @@ func TestVerificationProtocol(t *testing.T) {
 	}
 
 	datas = []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(libunlynxsmc.OperationInt)), IntBits: libunlynxsmc.IntBits,
-	IntPow: libunlynxsmc.Int_power, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}}
+	IntPow: libunlynxsmc.IntPower, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}}
 	req = libunlynxsmc.ClientRequest(datas, libunlynxsmc.NbServers, 0)
 
 	local := onet.NewLocalTest(libunlynx.SuiTe)

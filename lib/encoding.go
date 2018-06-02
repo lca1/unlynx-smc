@@ -30,7 +30,7 @@ func Encode(x *big.Int, operation string) []*big.Int {
 			break
 
 		case "variance":
-			result = append(result, IntPowNew(lenR, Int_power, x) ...)
+			result = append(result, IntPowNew(lenR, IntPower, x) ...)
 			break
 
 		case "bool_AND", "bool_OR":
@@ -52,6 +52,10 @@ func Encode(x *big.Int, operation string) []*big.Int {
 
 		case "lin_reg":
 			result = append(result, linRegNew_updated(result, LinRegBits) ...)
+			break
+
+		case "unsafe":
+			result = append(result, intUnsafeNew(lenR, x) ...)
 			break
 		}
 
