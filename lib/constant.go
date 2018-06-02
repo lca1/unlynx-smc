@@ -16,5 +16,5 @@ const NbServers = 5
 
 //JS: choose the operation to execute
 var Operation_list = [8]string{"sum", "mean", "variance", "bool_AND", "bool_OR", "min", "lin_reg", "unsafe"}
-var Operation = Operation_list[7]
+var Operation = Operation_list[0]
 var OperationInt = -1
