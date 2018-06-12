@@ -5,6 +5,24 @@ Suite = "Ed25519"
 Rounds = 1
 RunWait = "24h"
 Bandwidth = 1000
+TAGS = "vartime"
 
 Hosts, NbrDPsTotal, OperationInt, Proofs
-5,  1, true
+5,  5, 0, true
+5,  5, 5, true
+5,  10, 0, true
+5,  10, 5, true
+5,  15, 0, true
+5,  15, 5, true
+5,  25, 0, true
+5,  25, 5, true
+5,  50, 0, true
+5,  50, 5, true
+5,  100, 0, true
+5,  100, 5, true
+5,  250, 0, true
+5,  250, 5, true
+5,  500, 0, true
+5,  500, 5, true
+5,  1000, 0, true
+5,  1000, 5, true

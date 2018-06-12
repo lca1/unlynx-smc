@@ -99,8 +99,8 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		log.Lvl1("value is ", min_candidate)
 	} else if (bool_linreg == 1){
 		//JS: if we execute the lin_reg operation, print the corresponding X and Y values proposed by every DP
-		log.Lvl1("X value is ", ckt.Outputs()[0].WireValue)
-		log.Lvl1("Y value is ", ckt.Outputs()[1].WireValue)
+		//log.Lvl1("X value is ", ckt.Outputs()[0].WireValue)
+		//log.Lvl1("Y value is ", ckt.Outputs()[1].WireValue)
 	} else {log.Lvl1("value is ", ckt.Outputs()[0].WireValue)}
 
 	// Generate sharings of the input wires and the multiplication gate wires

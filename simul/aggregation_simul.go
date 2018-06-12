@@ -21,7 +21,6 @@ func init() {
 //AggregationSimulation holds the state of a simulation.
 type AggregationSimulation struct {
 	onet.SimulationBFTree
-
 	DpsPerServerTimesDPNbrOutput int
 	NbrDPsTotal                  int
 	Proofs                       bool

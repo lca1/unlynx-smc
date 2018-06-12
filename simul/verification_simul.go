@@ -30,7 +30,6 @@ var secretBitLen []int64
 //VerificationSimulation holds the state of a simulation.
 type VerificationSimulation struct {
 	onet.SimulationBFTree
-
 	OperationInt int
 	NbrDPsTotal int
 	Proofs      bool
@@ -83,7 +82,6 @@ func (sim *VerificationSimulation) Node(config *onet.SimulationConfig) error {
 func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
-
 		req, ckt = createCipherSet(config.Tree.Size(), sim.OperationInt)
 
 		roundTime := libunlynx.StartTimer("Verification(Simulation")
