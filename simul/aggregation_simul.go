@@ -22,8 +22,9 @@ func init() {
 type AggregationSimulation struct {
 	onet.SimulationBFTree
 
-	NbrRequestByProto int
-	Proofs            bool
+	DpsPerServerTimesDPNbrOutput int
+	NbrDPsTotal                  int
+	Proofs                       bool
 }
 
 //NewAggregationSimulation creates a new Aggregation simulation
@@ -70,7 +71,7 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
 
-		aggData = createAggData(sim.NbrRequestByProto, config.Tree.Size())
+		aggData = createAggData(sim.DpsPerServerTimesDPNbrOutput, config.Tree.Size(), sim.NbrDPsTotal)
 
 		roundTime := libunlynx.StartTimer("Aggregation(Simulation")
 		//new variable for nbValidation
@@ -117,13 +118,13 @@ func NewAggregationProtocolSimul(tni *onet.TreeNodeInstance, sim *AggregationSim
 	return protocol, err
 }
 
-func createAggData(numberClient, numberServer int) [][]*big.Int {
+func createAggData(dpsPerServerTimesDPNbrOutput, numberServer, nbrDPsTotal int) [][]*big.Int {
 
 	//secret value of clients
 	sumCipher = big.NewInt(0)
 	result := make([][]*big.Int, numberServer)
-	secretValues := make([][]*big.Int, numberClient)
-	for i := 0; i < numberClient; i++ {
+	secretValues := make([][]*big.Int, dpsPerServerTimesDPNbrOutput)
+	for i := 0; i < dpsPerServerTimesDPNbrOutput; i++ {
 		secretValues[i] = share.Share(share.IntModulus, numberServer, randomBig(big.NewInt(2), big.NewInt(64)))
 		log.LLvl1(secretValues)
 		for j := 0; j < len(secretValues[i]); j++ {
@@ -131,10 +132,15 @@ func createAggData(numberClient, numberServer int) [][]*big.Int {
 			sumCipher.Mod(sumCipher, share.IntModulus)
 		}
 	}
+	count := 0
 	for k := 0; k < numberServer; k++ {
-		for l := 0; l < numberClient; l++ {
-			result[k] = append(result[k], secretValues[l][k])
+		//ADD condition
+		if count < nbrDPsTotal {
+			for l := 0; l < dpsPerServerTimesDPNbrOutput; l++ {
+				result[k] = append(result[k], secretValues[l][k])
+			}
 		}
+		count = count + 1
 	}
 	sumCipher.Mod(sumCipher, share.IntModulus)
 	return result

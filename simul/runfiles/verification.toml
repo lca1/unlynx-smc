@@ -6,5 +6,5 @@ Rounds = 1
 RunWait = "24h"
 Bandwidth = 1000
 
-Hosts, NbrValidation, Proofs
-5,  10, true
+Hosts, NbrDPsTotal, OperationInt, Proofs
+5,  1, true

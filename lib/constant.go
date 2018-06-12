@@ -8,7 +8,7 @@ const NBuckets = 32
 const IntBits = 2
 //LinRegBits: the 0th entry is the number of bits in the y value. The rest of the entries represent the number of bits in each x_i.
 //JS: to be seen later, what should be the number of bits of the x and y values?
-var LinRegBits = []int{8, 8}
+var LinRegBits = []int{64, 64, 64, 64}
 
 //JS: other constants
 const NbHost = 5

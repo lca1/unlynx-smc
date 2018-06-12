@@ -31,9 +31,9 @@ var secretBitLen []int64
 type VerificationSimulation struct {
 	onet.SimulationBFTree
 
-	NbrRequestByProto int
-	NbrValidation     int
-	Proofs            bool
+	OperationInt int
+	NbrDPsTotal int
+	Proofs      bool
 }
 
 func init() {
@@ -84,13 +84,13 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
 
-		req, ckt = createCipherSet(sim.NbrRequestByProto, config.Tree.Size())
+		req, ckt = createCipherSet(config.Tree.Size(), sim.OperationInt)
 
 		roundTime := libunlynx.StartTimer("Verification(Simulation")
 		//new variable for nbValidation
-		wg := libunlynx.StartParallelize(sim.NbrValidation)
+		wg := libunlynx.StartParallelize(sim.NbrDPsTotal)
 		start := time.Now()
-		for i := 0; i < sim.NbrValidation; i++ {
+		for i := 0; i < sim.NbrDPsTotal; i++ {
 			go func() {
 				defer wg.Done()
 				rooti, err := config.Overlay.CreateProtocol("VerificationSimul", config.Tree, onet.NilServiceID)
@@ -146,17 +146,19 @@ func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationS
 }
 
 //create cipher text for test from a config file in UnLynxSMC
-func createCipherSet(numberClient, numberServer int) ([]*libunlynxsmc.Request, []*circuit.Circuit) {
+func createCipherSet(numberServer, operationInt int) ([]*libunlynxsmc.Request, []*circuit.Circuit) {
 
 	circuit := make([]*circuit.Circuit, 0)
 	result := make([]*libunlynxsmc.Request, numberServer)
 	secretBitLen = make([]int64, numberServer)
 
-	secret := config.LoadFile("../../../../henrycg/prio/eval/cell-geneva.conf")
-	fields := make([]*config.Field, 0)
-	for j := 0; j < len(secret.Fields); j++ {
+	//secret := config.LoadFile("../../../../henrycg/prio/eval/cell-geneva.conf")
+	//fields := make([]*config.Field, 0)
+	/*for j := 0; j < len(secret.Fields); j++ {
 		fields = append(fields, &(secret.Fields[j]))
-	}
+	}*/
+	fields := []*config.Field{&config.Field{Name: "Int1", Type: config.FieldType(byte(operationInt)), IntBits: libunlynxsmc.IntBits,
+		IntPow: libunlynxsmc.IntPower, CountMinHashes: libunlynxsmc.NHashes, CountMinBuckets: libunlynxsmc.NBuckets, LinRegBits: libunlynxsmc.LinRegBits}}
 	result = libunlynxsmc.ClientRequest(fields, numberServer, 0)
 
 	for j := 0; j < numberServer; j++ {
