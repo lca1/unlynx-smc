@@ -42,4 +42,7 @@ _testmain.go
 
 .idea/
 simul/build/
+simul/deploy/
+simul/server_list
+simul/simul
 test_data/

@@ -49,27 +49,27 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 		default:
 			panic("Unexpected type!")
 		case config.TypeInt:
-			log.LLvl1("INT")
+			//log.LLvl1("INT")
 			inputs = append(inputs, intNewRandom(int(field.IntBits))...)
 		case config.TypeIntPow:
-			log.LLvl1("POW")
+			//log.LLvl1("POW")
 			log.LLvl1(int(field.IntPow))
 			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
 		case config.TypeIntUnsafe:
-			log.LLvl1("UNSAFE")
+			//log.LLvl1("UNSAFE")
 			inputs = append(inputs, intUnsafeNewRandom(int(field.IntBits))...)
 		case config.TypeBoolOr:
-			log.LLvl1("OR")
+			//log.LLvl1("OR")
 			inputs = append(inputs, boolNewRandom()...)
 		case config.TypeBoolAnd:
-			log.LLvl1("AND")
+			//log.LLvl1("AND")
 			inputs = append(inputs, boolNewRandom()...)
 		case config.TypeCountMin:
-			log.LLvl1("MIN")
+			//log.LLvl1("MIN")
 			bool_min = 1
 			inputs = append(inputs, countMinNewRandom(int(field.CountMinHashes), int(field.CountMinBuckets))...)
 		case config.TypeLinReg:
-			log.LLvl1("LIN_REG")
+			//log.LLvl1("LIN_REG")
 			inputs = append(inputs, linRegNewRandom(field)...)
 			bool_linreg = 1
 		}
@@ -85,23 +85,23 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 	//log.Lvl1("When evaluate request mod is ", ckt.Modulus())
 	//can only evaluate on bit values,
 	ckt.Eval(inputs)
-	log.LLvl1(ckt.Outputs())
+	//log.LLvl1(ckt.Outputs())
 
 	//JS: if we execute the min operation, print the corresponding min value proposed by every DP
-	if (bool_min == 1) {
-		var min_candidate= big.NewInt(0)
+	if bool_min == 1 {
+		//var min_candidate= big.NewInt(0)
 		for i := 0; i < len(ckt.Outputs()); i++ {
-			if (ckt.Outputs()[i].WireValue.Int64() == int64(1)) {
-				min_candidate = big.NewInt(int64(i))
+			if ckt.Outputs()[i].WireValue.Int64() == int64(1) {
+				//min_candidate = big.NewInt(int64(i))
 				break
 			}
 		}
-		log.Lvl1("value is ", min_candidate)
+		//log.Lvl1("value is ", min_candidate)
 	} else if (bool_linreg == 1){
 		//JS: if we execute the lin_reg operation, print the corresponding X and Y values proposed by every DP
 		//log.Lvl1("X value is ", ckt.Outputs()[0].WireValue)
 		//log.Lvl1("Y value is ", ckt.Outputs()[1].WireValue)
-	} else {log.Lvl1("value is ", ckt.Outputs()[0].WireValue)}
+	} //else {log.Lvl1("value is ", ckt.Outputs()[0].WireValue)}
 
 	// Generate sharings of the input wires and the multiplication gate wires
 	ckt.ShareWires(prg)
@@ -165,7 +165,7 @@ func sharePolynomials(ckt *circuit.Circuit, prg *share.GenPRG) {
 	// Little n the number of points on the polynomials.
 	// The constant term is randomized, so it's (mulGates + 1).
 	n := len(mulGates) + 1
-	log.Lvl1("Mulgates: ", n)
+	//log.Lvl1("Mulgates: ", n)
 
 	// Big N is n rounded up to a power of two
 	N := utils.NextPowerOfTwo(n)

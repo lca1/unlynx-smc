@@ -11,9 +11,6 @@ import (
 	"time"
 )
 
-var aggData [][]*big.Int
-var sumCipher *big.Int
-
 func init() {
 	onet.SimulationRegister("Aggregation", NewAggregationSimulation)
 }
@@ -70,8 +67,6 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
 
-		aggData = createAggData(sim.DpsPerServerTimesDPNbrOutput, config.Tree.Size(), sim.NbrDPsTotal)
-
 		roundTime := libunlynx.StartTimer("Aggregation(Simulation")
 		//new variable for nbValidation
 		//start := time.Now()
@@ -85,7 +80,6 @@ func (sim *AggregationSimulation) Run(config *onet.SimulationConfig) error {
 		root.Start()
 		result := <-root.Feedback
 		log.Lvl1("res is ", result)
-		log.Lvl1(sumCipher)
 		//time := time.Since(start)
 		time := time.Since(start)
 		libunlynx.EndTimer(roundTime)
@@ -112,6 +106,8 @@ func NewAggregationProtocolSimul(tni *onet.TreeNodeInstance, sim *AggregationSim
 	pap := protocol.(*protocolsunlynxsmc.AggregationProtocol)
 
 	pap.Modulus = share.IntModulus
+
+	aggData := createAggData(sim.DpsPerServerTimesDPNbrOutput, tni.Tree().Size(), sim.NbrDPsTotal)
 	pap.Shares = aggData
 
 	return protocol, err
@@ -120,12 +116,12 @@ func NewAggregationProtocolSimul(tni *onet.TreeNodeInstance, sim *AggregationSim
 func createAggData(dpsPerServerTimesDPNbrOutput, numberServer, nbrDPsTotal int) [][]*big.Int {
 
 	//secret value of clients
-	sumCipher = big.NewInt(0)
+	sumCipher := big.NewInt(0)
 	result := make([][]*big.Int, numberServer)
 	secretValues := make([][]*big.Int, dpsPerServerTimesDPNbrOutput)
 	for i := 0; i < dpsPerServerTimesDPNbrOutput; i++ {
 		secretValues[i] = share.Share(share.IntModulus, numberServer, randomBig(big.NewInt(2), big.NewInt(64)))
-		log.LLvl1(secretValues)
+		//log.LLvl1(secretValues)
 		for j := 0; j < len(secretValues[i]); j++ {
 			sumCipher.Add(sumCipher, secretValues[i][j])
 			sumCipher.Mod(sumCipher, share.IntModulus)

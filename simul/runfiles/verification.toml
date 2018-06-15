@@ -1,5 +1,5 @@
 Simulation = "Verification"
-Servers = 5
+Servers = 2
 Bf = 2
 Suite = "Ed25519"
 Rounds = 1

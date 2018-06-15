@@ -17,16 +17,6 @@ import (
 	"time"
 )
 
-//variable to choose the secret once and split them, as you assume client have their secret already split
-//in  a vector of size #servers. Means the number of server is supposed to be public
-var ckt []*circuit.Circuit
-var req []*libunlynxsmc.Request
-var mod = share.IntModulus
-var randomPoint = utils.RandInt(mod)
-var secretBitLen []int64
-
-//function to generate random value and their splits
-
 //VerificationSimulation holds the state of a simulation.
 type VerificationSimulation struct {
 	onet.SimulationBFTree
@@ -82,7 +72,6 @@ func (sim *VerificationSimulation) Node(config *onet.SimulationConfig) error {
 func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
-		req, ckt = createCipherSet(config.Tree.Size(), sim.OperationInt)
 
 		roundTime := libunlynx.StartTimer("Verification(Simulation")
 		//new variable for nbValidation
@@ -124,6 +113,8 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 
 //NewVerificationProtocolSimul is the function called on each node to send data
 func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationSimulation) (onet.ProtocolInstance, error) {
+	var mod = share.IntModulus
+	var randomPoint = utils.RandInt(mod)
 
 	protocol, err := protocolsunlynxsmc.NewVerificationProtocol(tni)
 	pap := protocol.(*protocolsunlynxsmc.VerificationProtocol)
@@ -134,6 +125,8 @@ func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationS
 
 	//simulate sending of client to protocol, !! each server must have a different circuit which has the same value for
 	//each client submission
+
+	req, ckt := createCipherSet(tni.Tree().Size(), sim.OperationInt)
 
 	pap.Request = req[pap.Index()]
 	pap.Checker = libunlynxsmc.NewChecker(ckt[tni.Index()], pap.Index(), 0)
@@ -148,7 +141,6 @@ func createCipherSet(numberServer, operationInt int) ([]*libunlynxsmc.Request, [
 
 	circuit := make([]*circuit.Circuit, 0)
 	result := make([]*libunlynxsmc.Request, numberServer)
-	secretBitLen = make([]int64, numberServer)
 
 	//secret := config.LoadFile("../../../../henrycg/prio/eval/cell-geneva.conf")
 	//fields := make([]*config.Field, 0)
