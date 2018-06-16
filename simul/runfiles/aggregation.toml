@@ -1,5 +1,5 @@
 Simulation = "Aggregation"
-Servers = 2
+Servers = 5
 Bf = 2
 Suite = "Ed25519"
 Rounds = 1

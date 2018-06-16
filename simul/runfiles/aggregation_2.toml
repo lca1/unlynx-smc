@@ -1,0 +1,24 @@
+Simulation = "Aggregation"
+Servers = 5
+Bf = 2
+Suite = "Ed25519"
+Rounds = 1
+RunWait = "24h"
+Bandwidth = 1000
+TAGS = "vartime"
+
+Hosts, DpsPerServerTimesDPNbrOutput, NbrDPsTotal, Proofs
+3, 3, 10, true
+3, 42, 10, true
+5, 2, 10, true
+5, 28, 10, true
+10, 1, 10, true
+10, 14, 10, true
+15, 1, 10, true
+15, 14, 10, true
+20, 1, 10, true
+20, 14, 10, true
+30, 1, 10, true
+30, 14, 10, true
+50, 1, 10, true
+50, 14, 10, true
