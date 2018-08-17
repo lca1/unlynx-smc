@@ -6,6 +6,6 @@ import (
 )
 
 func TestSimulation(t *testing.T) {
-	simul.Start("runfiles/verification.toml")
-	//simul.Start("runfiles/aggregation.toml")
+	simul.Start("runfiles/paper_verification.toml")
+	//simul.Start("runfiles/aggregationM.toml")
 }

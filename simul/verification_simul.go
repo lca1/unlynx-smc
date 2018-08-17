@@ -15,15 +15,25 @@ import (
 	"github.com/lca1/unlynx/lib"
 	"math/big"
 	"time"
+	"sync"
 )
 
 //VerificationSimulation holds the state of a simulation.
 type VerificationSimulation struct {
 	onet.SimulationBFTree
-	OperationInt int
-	NbrDPsTotal int
-	Proofs      bool
+	OperationInt 	int
+	NbrParallel 	int
+	NbrSequential 	int
+	NbrDPsTotal 	int
+	Proofs      	bool
+	Timeout 		time.Duration
+	Sleep 			time.Duration
+
 }
+//var req []*libunlynxsmc.Request
+//var ckt []*circuit.Circuit
+//var mod = share.IntModulus
+//var randomPoint = utils.RandInt(mod)
 
 func init() {
 	onet.SimulationRegister("Verification", NewVerificationSimulation)
@@ -72,26 +82,62 @@ func (sim *VerificationSimulation) Node(config *onet.SimulationConfig) error {
 func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 	for round := 0; round < sim.Rounds; round++ {
 		log.Lvl1("Starting round", round)
-
+		//req, ckt = createCipherSet(sim.Hosts, sim.OperationInt)
 		roundTime := libunlynx.StartTimer("Verification(Simulation")
 		//new variable for nbValidation
 		wg := libunlynx.StartParallelize(sim.NbrDPsTotal)
 		start := time.Now()
-		for i := 0; i < sim.NbrDPsTotal; i++ {
-			go func() {
-				defer wg.Done()
-				rooti, err := config.Overlay.CreateProtocol("VerificationSimul", config.Tree, onet.NilServiceID)
-				if err != nil {
-					return
+		mu := sync.Mutex{}
+		counter := 0
+
+		for i := 0; i < sim.NbrParallel; i++ {
+			go func(i int) {
+				for j := 0; j <  sim.NbrSequential; j++ {
+					rooti, err := config.Overlay.CreateProtocol("VerificationSimul", config.Tree, onet.NilServiceID)
+					if err != nil {
+						log.Fatal("Error while creating Protocol:", err)
+					}
+					root := rooti.(*protocolsunlynxsmc.VerificationProtocol)
+
+					timer := time.Now()
+					go root.Start()
+
+					mutex := sync.Mutex{}
+					finish := false
+					if j > 0 {
+						go func (startWait time.Time) {
+							for time.Since(startWait) < time.Millisecond * sim.Timeout {
+								time.Sleep(time.Millisecond*sim.Sleep)
+								mutex.Lock()
+								if finish {
+									return
+								}
+								mutex.Unlock()
+							}
+							log.LLvl1("Go routine blocked. Unblocking...")
+							root.AggregateData <-nil
+						}(time.Now())
+					}
+
+					<-root.AggregateData
+					log.Lvl2("It took:", time.Since(timer))
+					mutex.Lock()
+					finish = true
+					mutex.Unlock()
+
+
+					mu.Lock()
+					log.LLvl1("Finished", counter, sim.NbrDPsTotal)
+					counter = counter + 1
+					if counter <= sim.NbrDPsTotal{
+						wg.Done()
+					}
+					mu.Unlock()
 				}
-				root := rooti.(*protocolsunlynxsmc.VerificationProtocol)
-
-				root.Start()
-				<-root.AggregateData
-
-			}()
-
+			}(i)
 		}
+
+
 		libunlynx.EndParallelize(wg)
 		time := time.Since(start)
 		libunlynx.EndTimer(roundTime)
@@ -111,11 +157,11 @@ func (sim *VerificationSimulation) Run(config *onet.SimulationConfig) error {
 	return nil
 }
 
+
 //NewVerificationProtocolSimul is the function called on each node to send data
 func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationSimulation) (onet.ProtocolInstance, error) {
-	var mod = share.IntModulus
-	var randomPoint = utils.RandInt(mod)
-
+	mod := share.IntModulus
+	randomPoint := utils.RandInt(mod)
 	protocol, err := protocolsunlynxsmc.NewVerificationProtocol(tni)
 	pap := protocol.(*protocolsunlynxsmc.VerificationProtocol)
 
@@ -127,8 +173,7 @@ func NewVerificationProtocolSimul(tni *onet.TreeNodeInstance, sim *VerificationS
 	//each client submission
 
 	req, ckt := createCipherSet(tni.Tree().Size(), sim.OperationInt)
-
-	pap.Request = req[pap.Index()]
+	pap.Request = req[tni.Index()]
 	pap.Checker = libunlynxsmc.NewChecker(ckt[tni.Index()], pap.Index(), 0)
 	pap.Pre = libunlynxsmc.NewCheckerPrecomp(ckt[tni.Index()])
 	pap.Pre.SetCheckerPrecomp(randomPoint)

@@ -1,7 +1,6 @@
 package libunlynxsmc
 
 import (
-	"github.com/dedis/onet/log"
 	"github.com/henrycg/prio/circuit"
 	"github.com/henrycg/prio/poly"
 	"github.com/henrycg/prio/share"
@@ -53,7 +52,7 @@ func ClientRequest(datas []*config.Field, ns int, leaderForReq int) []*Request {
 			inputs = append(inputs, intNewRandom(int(field.IntBits))...)
 		case config.TypeIntPow:
 			//log.LLvl1("POW")
-			log.LLvl1(int(field.IntPow))
+			//log.LLvl1(int(field.IntPow))
 			inputs = append(inputs, intPowNewRandom(int(field.IntBits), int(field.IntPow))...)
 		case config.TypeIntUnsafe:
 			//log.LLvl1("UNSAFE")

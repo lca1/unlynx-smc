@@ -3,12 +3,12 @@ package protocolsunlynxsmc
 import (
 	"errors"
 	"github.com/dedis/onet"
-	"github.com/dedis/onet/log"
 	"github.com/dedis/onet/network"
 	"math/big"
 
 	"github.com/henrycg/prio/utils"
 	"github.com/lca1/unlynx-smc/lib"
+	"github.com/dedis/onet/log"
 )
 
 /**
@@ -119,22 +119,22 @@ func NewVerificationProtocol(n *onet.TreeNodeInstance) (onet.ProtocolInstance, e
 	}
 
 	//register the channel for announce
-	err := st.RegisterChannel(&st.AnnounceChannel)
+	err := st.RegisterChannelLength(&st.AnnounceChannel, 500)
 	if err != nil {
 		return nil, errors.New("couldn't register Announce data channel: " + err.Error())
 	}
 
-	err = st.RegisterChannel(&st.CorShareChannel)
+	err = st.RegisterChannelLength(&st.CorShareChannel, 500)
 	if err != nil {
 		return nil, errors.New("Couldn't register CorrShare channel" + err.Error())
 	}
 
-	err = st.RegisterChannel(&st.OutShareChannel)
+	err = st.RegisterChannelLength(&st.OutShareChannel, 500)
 	if err != nil {
 		return nil, errors.New("Couldn't register OutShare channel" + err.Error())
 	}
 
-	err = st.RegisterChannel(&st.ResponsceChannel)
+	err = st.RegisterChannelLength(&st.ResponsceChannel, 500)
 	if err != nil {
 		return nil, errors.New("Couldn't register response wake up channel" + err.Error())
 	}
@@ -151,7 +151,7 @@ func (p *VerificationProtocol) Start() error {
 
 //Dispatch is called on the node and handle incoming messages
 func (p *VerificationProtocol) Dispatch() error {
-
+	defer p.Done()
 	//wakeUp all server
 	if !p.IsRoot() {
 		if !p.IsLeaf() {
@@ -207,7 +207,14 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 	//Each proto need to send to each others their share to reconstruct the D & E
 	//log.Lvl1("Broadcasting from", p.Index())
 	//log.Lvl1("Broadcasting share", evalReplies)
-	p.Broadcast(&CorShare{evalReplies.ShareD.Bytes(), evalReplies.ShareE.Bytes()})
+
+	for _,node := range p.Tree().List() {
+		if node.ServerIdentity.String() != p.ServerIdentity().String() {
+			for err := p.SendTo(node, &CorShare{evalReplies.ShareD.Bytes(), evalReplies.ShareE.Bytes()}); err != nil; {
+				log.LLvl1("Error sending to node", err)
+			}
+		}
+	}
 
 	//Now they need to reconstruct it
 	evalRepliesFromAll := make([]*libunlynxsmc.CorShare, 1)
@@ -236,7 +243,10 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 
 	//send to Root all evaluation
 	if !p.IsRoot() {
-		p.SendTo(p.Root(), &OutShare{finalReplies[0].Check.Bytes()})
+		err := p.SendTo(p.Root(), &OutShare{finalReplies[0].Check.Bytes()})
+		if err != nil {
+			log.LLvl1("Error sending to root", err)
+		}
 	}
 
 	//then the leader  do all the rest, check if its valid
@@ -250,7 +260,7 @@ func (p *VerificationProtocol) collectiveVerificationPhase() []*big.Int {
 			finalRepliesAll = append(finalRepliesAll, outShare)
 		}
 		isValid := check.OutputIsValid(finalRepliesAll)
-		log.Lvl1("output is valid ? ", isValid)
+		//log.Lvl1("output is valid ? ", isValid)
 		if !isValid {
 			return make([]*big.Int, 0)
 		}

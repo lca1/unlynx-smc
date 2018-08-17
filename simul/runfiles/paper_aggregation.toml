@@ -1,0 +1,15 @@
+Simulation = "Aggregation"
+Servers = 13
+Bf = 2
+Suite = "Ed25519"
+Rounds = 1
+RunWait = "24h"
+Bandwidth = 100
+TAGS = "vartime"
+Delay = 20
+
+Hosts, DpsPerServerTimesDPNbrOutput, NbrDPsTotal, Proofs
+6, 1000, 6, true
+12, 1000, 12, true
+24, 1000, 24, true
+48, 1000, 48, true

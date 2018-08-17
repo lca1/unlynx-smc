@@ -160,6 +160,7 @@ func (p *AggregationProtocol) ascendingAggregationPhase() []*big.Int {
 
 	//do the sum of ciphers
 	//JS: Local sum from different DPS
+	//log.LLvl1(p.Name(), "  ", p.Shares)
 	for i := 0; i < len(p.Shares); i++ {
 		for j := 0; j < len(p.Sum); j++ {
 			p.Sum[j].Add(p.Sum[j], p.Shares[i][j])

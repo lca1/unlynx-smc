@@ -1,0 +1,15 @@
+Simulation = "Verification"
+Servers = 13
+Bf = 2
+Suite = "Ed25519"
+Rounds = 1
+RunWait = "24h"
+Bandwidth = 100
+Delay = 20
+
+
+Hosts, NbrDPsTotal, NbrParallel, NbrSequential, OperationInt, Proofs, Timeout, Sleep
+96, 960, 2, 960, 1, true, 800, 100
+96, 960, 2, 960, 4, true, 5000, 500
+96, 9600, 2, 9600, 1, true, 800, 100
+96, 9600, 2, 9600, 4, true, 5000, 500

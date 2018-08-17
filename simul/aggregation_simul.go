@@ -117,7 +117,11 @@ func createAggData(dpsPerServerTimesDPNbrOutput, numberServer, nbrDPsTotal int) 
 
 	//secret value of clients
 	sumCipher := big.NewInt(0)
-	result := make([][]*big.Int, numberServer)
+	size := numberServer
+	if nbrDPsTotal < numberServer {
+		size = nbrDPsTotal
+	}
+	result := make([][]*big.Int, size)
 	secretValues := make([][]*big.Int, dpsPerServerTimesDPNbrOutput)
 	for i := 0; i < dpsPerServerTimesDPNbrOutput; i++ {
 		secretValues[i] = share.Share(share.IntModulus, numberServer, randomBig(big.NewInt(2), big.NewInt(64)))
@@ -138,5 +142,6 @@ func createAggData(dpsPerServerTimesDPNbrOutput, numberServer, nbrDPsTotal int) 
 		count = count + 1
 	}
 	sumCipher.Mod(sumCipher, share.IntModulus)
+
 	return result
 }
